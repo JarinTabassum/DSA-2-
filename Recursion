@@ -1,0 +1,105 @@
+//if occured any problem check this video:
+//https://youtu.be/Mr9MVpSoTGk?si=3cP7bE8jCd9Kwf18
+
+//write a recursive implementation of the factorial function.
+//Recall that n!=1x2x....xn , with the special case that 0!=1
+#include<iostream>
+using namespace std;
+int factorial(int n){
+    if(n==0) return 1;
+    if(n==1) return 1; //base case
+    else{
+        return factorial(n-1)*n; //realtion generlised
+    }
+}
+int main(){
+    int n;
+    cout<<"Enter the number which factorial you want to find out:"<<endl;
+    cin>>n;
+    int f=factorial(n);
+    cout<<"Factorial is:"<<endl<<f;
+}
+
+
+//Write a recursive program to print the even numbers in a given range.
+#include<iostream>
+using namespace std;
+void iseven(int a,int b){
+    if(a>b) return;
+    else{
+        if(a%2==0) cout<<a<<" ";
+        iseven(a+1,b);
+    }
+}
+int main(){
+    int a,b;
+    cout<<"Enter the numbers:"<<endl;
+    cin>>a>>b;
+    iseven(a,b);
+}
+
+
+//Write a recursive program to print the nth Fibonacci number
+#include<iostream>
+using namespace std;
+int fib(int n){
+    if(n==0 || n==1) return n; 
+    //the base is 0,1 as fibonacci means the sum of the previous two numbers, so in that sense 0 and 1 doesnt have any non negative two previous numbers
+    else{
+        return fib(n-1)+fib(n-2);
+        //adding the fibonacci results of the previous two numbers to get the new fibonacci result 
+    }
+}
+int main(){
+    int n,i=0;
+    cout<<"Enter the number:";
+    cin>>n;
+    while(i<n){ 
+    //to print the fibs of every positoion till nth
+        cout<<fib(i)<<" ";
+        i++;
+    }
+}
+
+
+//write a recursive program to calculate the power of x (x^y), where y is a non negative integer. 
+#include<iostream>
+using namespace std;
+int power(int x,int y){
+    if(y==0) return 1;
+    else{
+        return power(x,y-1)*x;
+    }
+}
+int main(){
+    int x,y;
+    cout<<"Enter the numbers:"<<endl;
+    cin>>x;
+    cin>>y;
+    int z=power(x,y);
+    cout<<"Power of y="<<y<<" over x="<<x<<" is: "<<z;
+}
+
+
+//Write a recursive program to print an array of size n in given order
+#include<iostream>
+using namespace std;
+void print_array(int arr[],int a,int b){
+    if(a>b) return;
+    else{
+        cout<<arr[a]<<" ";
+        print_array(arr,a+1,b);
+    }
+}
+int main(){
+    int n;
+    cout<<"How many numbers you want to enter:"<<endl;
+    cin>>n;
+    int arr[n];
+    for(int i=0;i<n;i++){
+        cin>>arr[i];
+    }
+    print_array(arr,0,n-1);
+}
+
+
