@@ -1,0 +1,16 @@
+//Write a recursive program to print the even numbers in a given range.
+#include<iostream>
+using namespace std;
+void iseven(int a,int b){
+    if(a>b) return;
+    else{
+        if(a%2==0) cout<<a<<" ";
+        iseven(a+1,b);
+    }
+}
+int main(){
+    int a,b;
+    cout<<"Enter the numbers:"<<endl;
+    cin>>a>>b;
+    iseven(a,b);
+}
