@@ -82,6 +82,7 @@ int main(){
 
 
 //Write a recursive program to print an array of size n in given order
+//Write a recursive program to reverse an array of size n in given order
 #include<iostream>
 using namespace std;
 void print_array(int arr[],int a,int b){
@@ -89,6 +90,13 @@ void print_array(int arr[],int a,int b){
     else{
         cout<<arr[a]<<" ";
         print_array(arr,a+1,b);
+    }
+}
+void print_reverse_array(int arr[],int a,int b){
+    if(a>b) return;
+    else{
+        cout<<arr[b]<<" ";
+        print_array(arr,a,b-1);
     }
 }
 int main(){
@@ -103,3 +111,117 @@ int main(){
 }
 
 
+//Write a recursive program to find the sum of the elements of an array of size n
+#include<iostream>
+using namespace std;
+int sum_of_array(int arr[],int start,int end){
+//Base case: if index reaches n, return 0 (end of the array)
+    if(start==end) return 0; //if wanted the product of the array elements then return 1 and * it
+    else{
+       return (arr[start]+sum_of_array(arr,start+1,end));
+    }
+}
+int main(){
+    int n;
+    cout<<"How many numbers you want to enter:"<<endl;
+    cin>>n;
+    int arr[n];
+    for(int i=0;i<n;i++){
+        cin>>arr[i];
+    }
+    int s=sum_of_array(arr,0,n);
+    cout<<s;
+}
+
+
+//Write a recursive program to find the maximum of the elements of an array of size n.
+#include<iostream>
+using namespace std;
+int find_max(int arr[],int start,int end){
+    //base case: if there is only element, then that is the max element right
+    if(start==end) 
+       return arr[start];
+    int max=find_max(arr,start+1,end);
+    if(arr[start]>max)
+       return arr[start];
+    else
+       return max;
+}
+int main(){
+    int n;
+    cout<<"How many numbers you want to enter:"<<endl;
+    cin>>n;
+    int arr[n];
+    for(int i=0;i<n;i++){
+        cin>>arr[i];
+    }
+    int s=find_max(arr,0,n-1);
+    cout<<s;
+}
+
+
+//Write a recursive program to print and count the prime numbers of an array of n integers
+#include<iostream>
+#include<cmath>
+using namespace std;
+int prime(int n,int divisor=2){ //as every number is divisible by 1,so start from 2
+    if(n<=1) return 0; //from 1 to previous is not prime
+    if(n==2) return 1; //2 is prime 
+    if(n%divisor==0) return 0; //obviously if it gets divisible by any number other than itself then it cant be prime.
+    if(divisor>sqrt(n)) return 1; //the logic here is if the divisor has crossed the sruare root of the number but yet it still hasnt got any divisor, then it has to be a prime number
+    return prime(n,divisor+1);
+    //the concern regarding that the divisor will eventually be the number itself wont happen, as in the forth condition we defined that the divisor shouldnt exceed more than the numbers square root
+}
+int find_prime(int arr[],int start,int end){
+    int count=0; //count the number of prime numbers
+    if(start>end) return 0;
+    else{
+    if(prime(arr[start])==1){
+        count=1; 
+        cout<<arr[start]<<" ";
+        }
+    }
+        return count+find_prime(arr,start+1,end); //for the prime numbers count will keep increasing by one as in the prime checked we defined count=1
+}
+int main(){
+    int n;
+    cout<<"How many numbers you want to enter:"<<endl;
+    cin>>n;
+    int arr[n];
+    for(int i=0;i<n;i++){
+        cin>>arr[i];
+    }
+    int f=find_prime(arr,0,n-1);
+cout<<f;
+}
+
+
+
+//Find the sum of the following series up to nth position / Print the following series up to nth position.
+1. 1^2 + 2^2 + 3^2 +....
+#include<iostream>
+using namespace std;
+int series_sum1(int n){
+    if(n==1) return 1;
+    else{
+        return (series_sum1(n-1))+(n*n);
+//we will keep squaring the numbers till we reach 1, which square is already 1, so it will return 1, and the loop will complete
+    }
+}
+int main(){
+    int n;
+    cout<<"Enter the number:"<<endl;
+    cin>>n;
+    int s=series_sum1(n);
+    cout<<s;
+}
+
+2.1*3 + 2*5 + 3*7 + 4*9 +.....
+int series_sum2(int n){
+    if(n==1) return 1*3; //base 
+    else{
+        return ((n*(n*2+1))+series_sum2(n-1));
+}
+}
+
+3.2*3 + 4*5 + 8*7 + 16*9+....
