@@ -1,0 +1,21 @@
+//Write a recursive program to print the nth Fibonacci number
+#include<iostream>
+using namespace std;
+int fib(int n){
+    if(n==0 || n==1) return n; 
+    //the base is 0,1 as fibonacci means the sum of the previous two numbers, so in that sense 0 and 1 doesnt have any non negative two previous numbers
+    else{
+        return fib(n-1)+fib(n-2);
+        //adding the fibonacci results of the previous two numbers to get the new fibonacci result 
+    }
+}
+int main(){
+    int n,i=0;
+    cout<<"Enter the number:";
+    cin>>n;
+    while(i<n){ 
+    //to print the fibs of every positoion till nth
+        cout<<fib(i)<<" ";
+        i++;
+    }
+}
