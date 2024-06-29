@@ -1,0 +1,28 @@
+PROBLEM 01.
+Write a function print_odd using divide-and-conquer algorithm to print the odd numbers of an array of n integers.
+#include<iostream>
+using namespace std;
+int print_odd(int arr[],int start,int end){
+    if(start==end){ //same index of start and end means one element
+    if(arr[start]%2!=0) return 1; //if that one element is odd return 1
+    else return 0;
+    }
+    else{
+        int mid=(start+end)/2; //we will keep dividing until we reach to one element
+        int c1=print_odd(arr,start,mid); //left part
+        int c2=print_odd(arr,mid+1,end); //right part
+        return c1+c2; //combined part
+    }
+}
+int main(){
+    int n;
+    cout<<"Enter a number:";
+    cin>>n;
+    int arr[n];
+    cout<<"Enter the number of the elements:"<<endl;
+    for(int i=0;i<n;i++){
+        cin>>arr[i];
+    }
+    int c=print_odd(arr,0,n-1);
+    cout<<"Odd count:"<<c<<endl;
+}
