@@ -1,23 +1,5 @@
-PROBLEM 01. Fractional knapsack
-The weights and values of n items are given. The items are such that you can take a whole item or some
-fraction of it (divisible). You have a knapsack to carry those items, whose weight capacity is W. Due to
-the capacity limit of the knapsack, it might not be possible to carry all the items at once. In that case,
-pick items such that the profit (total values of the taken items) is maximized.
-Write a program that takes the weights and values of n items, and the capacity W of the knapsack from
-the user and then finds the items which would maximize the profit using a greedy algorithm.
-
-sample input
-4 (number of items)
-4 20  (weight and value)                                       
-3 9
-2 12
-1 7
-5 (maximum wieght)                   sample output
-                                     item 4: 1.0 kg 7.0 taka
-                                     item 3: 2.0 kg 12.0 taka
-                                     item 1: 2.0 kg 10.0 taka
-                                     profit: 29 taka
-
+//all the questions are in the greedy algorithm pdf file
+//PROBLEM 01. Fractional knapsack
 
 #include<iostream>
 #include<algorithm>
@@ -68,7 +50,8 @@ int main(){
 
 
 
-//Problem 2
+//ALTERNATIVE QUESTION 01.1: Thieves in warehouse
+
 #include<iostream>
 #include<vector>
 #include<algorithm>
