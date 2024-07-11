@@ -298,3 +298,41 @@ int main(){
     }
     activity_selection(b,activities);
 }
+
+
+//Greedy Coin Change
+#include<iostream>
+#include<algorithm>
+#include<vector>
+using namespace std;
+void coin_change(int amount,vector<int>& coins){
+    vector<pair<int,int>> result; //a pair vector to store the answer, first one will carry the coin value and the second one will hold how many of the coins will be needed
+    int coin_taken=0;
+    for(int i=0;i<coins.size();i++){
+    while(amount>=coins[i]){
+        int count=amount/coins[i]; //173/25=6 so 6 unit of 25 cents will be needed
+        amount-=coins[i]*count; 
+        result.push_back({coins[i],count}); 
+        coin_taken+=count;
+    }
+    }
+    for(auto& r:result){
+        cout<<r.first<<" cents --- "<<r.second<<endl;
+        //to write the vector pair's first element and second element
+    }
+    cout<<"Total coins used: "<<coin_taken<<endl;
+}
+int main(){
+    int a,c;
+    cout<<"Enter the amount:";
+    cin>>a;
+    cout<<"How many types of coins will be included:";
+    cin>>c;
+    vector<int> coins(c);
+    for(int i=0;i<c;i++){
+        cout<<"Enter the coin values:";
+        cin>>coins[i];
+    }
+    sort(coins.rbegin(),coins.rend()); //rbegin and rend cz it is descending order (we need the most valued coin at first and eventually the rest ones)
+    coin_change(a,coins);
+}
