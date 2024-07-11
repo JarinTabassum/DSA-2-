@@ -252,3 +252,49 @@ int main(){
     }
     activity_selection(activities);
 }
+
+
+//ALTERNATIVE QUESTION 02.1: 
+#include<iostream>
+#include<algorithm>
+#include<vector>
+using namespace std;
+struct Activity{
+    string name;
+    int start_time;
+    int duration;
+    int end_time;
+};
+bool compare(Activity a,Activity b){
+    return a.end_time<b.end_time;
+    //whichever has the earliest finishing time will be at the first
+}
+void activity_selection(int break_time,vector<Activity>& a){
+    sort(a.begin(),a.end(),compare);
+    vector<Activity> selected_act; //taking a vector which will have the selected activites
+    int last_selected_end_time=0; //at first as no item as selected so 0
+    for(int i=0;i<a.size();i++){
+        if(a[i].start_time>=last_selected_end_time){
+            //if ones starting time is more than the last chosen ones starting time than we can take it as it is not conflicting
+            selected_act.push_back(a[i]);
+            last_selected_end_time=a[i].end_time+break_time; //adding the break time to the last selected ones end time
+        }
+    }
+    for(auto& selected:selected_act){
+        cout<<"name:"<<selected.name<<" start time:"<<selected.start_time<<" end time:"<<selected.end_time<<endl;
+    }
+}
+int main(){
+    int n,b;
+    cout<<"Enter the number of events:";
+    cin>>n;
+    cout<<"Enter break time:";
+    cin>>b;
+    vector<Activity> activities(n);
+    for(int i=0;i<n;i++){
+        cout<<"Enter the name and starting and duration:";
+        cin>>activities[i].name>>activities[i].start_time>>activities[i].duration;
+        activities[i].end_time=activities[i].start_time+activities[i].duration; //start+duration=end
+    }
+    activity_selection(b,activities);
+}
