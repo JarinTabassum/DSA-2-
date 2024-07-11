@@ -210,3 +210,45 @@ int main(){
 }
 
 
+
+//Activity Selection Problem
+#include<iostream>
+#include<algorithm>
+#include<vector>
+using namespace std;
+struct Activity{
+    string name;
+    int start_time;
+    int end_time;
+};
+bool compare(Activity a,Activity b){
+    return a.end_time<b.end_time;
+    //whichever has the earliest finishing time will be at the first
+}
+void activity_selection(vector<Activity>& a){
+    sort(a.begin(),a.end(),compare);
+    vector<Activity> selected_act; //taking a vector which will have the selected activites
+    selected_act.push_back(a[0]); //here out first element will be the first one after sorting as it has the earliest finishing time
+    Activity last_selected=a[0]; //here we took a Activity varible which will store only the last selected activity
+    for(int i=1;i<a.size();i++){
+        if(a[i].start_time>=last_selected.end_time){
+            //if ones starting time is more than the last chosen ones starting time than we can take it as it is not conflicting
+            selected_act.push_back(a[i]);
+            last_selected=a[i];
+        }
+    }
+    for(auto& selected:selected_act){
+        cout<<"name:"<<selected.name<<" start time:"<<selected.start_time<<" end time:"<<selected.end_time<<endl;
+    }
+}
+int main(){
+    int n;
+    cout<<"Enter the number of events:";
+    cin>>n;
+    vector<Activity> activities(n);
+    for(int i=0;i<n;i++){
+        cout<<"Enter the name and starting and finishing time:";
+        cin>>activities[i].name>>activities[i].start_time>>activities[i].end_time;
+    }
+    activity_selection(activities);
+}
