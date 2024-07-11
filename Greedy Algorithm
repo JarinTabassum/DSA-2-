@@ -78,6 +78,7 @@ int fractional_knapsack(vector<Item>& items,vector<double>& capacities){
         
         for(auto& item:items){ //iteratively going through each item in the sorted items vector
         if(item.weight>0){ //if there is weight remaining to the item then
+//also as we are using that for(auto& item:items) so we dont have to manually write items[i].weight or things we can somply write item.weight
             if(item.weight<=capacity){ //if the weight is less or equal to the capacity then take all of it
                 cout<<"Taking the item "<<item.name<<": "<<" weight: "<<item.weight<<"kg  value: "<<item.value<<" taka "<<endl;
                 capacity-=item.weight; //deducting thief's remaining capacity by the weight he took
@@ -144,5 +145,68 @@ int main(){
 
 
 
+
+//Problem 3
+#include<iostream>
+#include<algorithm>
+#include<vector>
+using namespace std;
+struct questions{
+    int marks;
+    int t;
+    double marks_per_minute;
+};
+bool compare(questions A,questions B){
+    return A.marks_per_minute>B.marks_per_minute;
+}
+void maximize(int Time,vector<questions>& q,bool with_friend){
+    sort(q.begin(),q.end(),compare); //sorting the vector in ascending order
+    double total_marks=0.0;
+    int available_time=with_friend ? 2*Time : Time;
+    //with a friend? if yes double the time : if not just the time
+    vector<pair<int,double>> answered_questions;
+    //int here will have the number of the question and the double will represent the percentage 
+    for(int i=0;i<q.size();i++){
+        if(q[i].t<=available_time){
+            available_time-=q[i].t;
+            total_marks+=q[i].marks;
+            answered_questions.push_back({i+1,100.0}); //{} as pair, question number i+1 as i is starting from 0, as we have taken full of the question so 100%
+        }
+        else{ //remaining question will take more time than available time
+            double fraction=(double)available_time/q[i].t;
+            //as we are not answering the full question, how much did we answer
+            available_time-=fraction; 
+            total_marks+=q[i].marks*fraction;
+            answered_questions.push_back({i+1,100*fraction});
+            break; //as capacity is not left anymore so break it
+        }
+    }
+    if(with_friend){
+        cout<<" Maximum "<<total_marks<<" marks answering with a friend"<<endl;
+    }
+    else{
+        cout<<"Maximum "<<total_marks<<" were answered all alone"<<endl;
+    }
+    for(auto& ans : answered_questions){
+        cout<<"ques "<<ans.first<<" "<<ans.second<<"% done--"<<(q[ans.first-1].marks*ans.second/100)<<endl;
+        //there are two parts(number and mark), ans.first means the question number and ans.second means marks of that question, q[ans.frist-1] as ans is starting from i+1 but question vector starts from 0 thats why -1, so that questions given mark * how much answered of the question/100 
+    }
+}
+int main(){
+    int Marks,Time,q_num;
+    cout<<"Enter total marks,time and question number:";
+    cin>>Marks>>Time>>q_num;
+    vector<questions> q(q_num);
+    for(int i=0;i<q_num;i++){
+        cout<<"Enter marks and time:";
+        cin>>q[i].marks>>q[i].t;
+        q[i].marks_per_minute=(double)q[i].marks/q[i].t;
+    }
+    maximize(Time,q,false); //here as parameter we are taking total time,vector(which will take the marks and time of the individual questions) and with a friend or not bool
+    for(int i=0;i<q_num;i++){ //resetting the marks per minute
+        q[i].marks_per_minute=(double)q[i].marks/q[i].t;
+    }
+    maximize(Time,q,true);
+}
 
 
