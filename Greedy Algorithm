@@ -378,3 +378,37 @@ int main(){
     sort(gas_station.begin(),gas_station.end());
     minimum_stops(distance,tank_life,gas_station);
 }
+
+//Determine the smallest set of unit-length closed intervals
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+vector<pair<double,double>> intervals(vector<double>& points){
+    sort(points.begin(),points.end()); //sorting the points in ascending order (small to big)
+    vector<pair<double,double>> covered_points; //the pair which will hold the covered points
+    int i=0;
+    int n=points.size();
+    while(i<n){
+        double start=points[i]; //the least point is the start (as we sorted it so the first one is the least)
+        double end=start+1.0; //the end will be 1 plus to the starting one
+        covered_points.push_back({start,end}); //then we will put that in the pair
+        while(i<n && points[i]<=end) //as long as the starting is not greater than the end keep going
+        i++; //keep moving to the point that is not covered, then we will stop there and it will be the start one
+    }
+    return covered_points;
+}
+int main(){
+    int p;
+    cout<<"Enter the number of points:";
+    cin>>p;
+    vector<double> points(p);
+    for(int i=0;i<p;i++){
+        cout<<"Enter points:";
+        cin>>points[i];
+    }
+    vector<pair<double,double>> inter=intervals(points);
+    for(auto& i : inter){
+        cout<<"["<<i.first<<", "<<i.second<<"]"<<endl;
+    }
+}
