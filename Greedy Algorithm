@@ -336,3 +336,45 @@ int main(){
     sort(coins.rbegin(),coins.rend()); //rbegin and rend cz it is descending order (we need the most valued coin at first and eventually the rest ones)
     coin_change(a,coins);
 }
+
+
+//Finding minimum stops
+#include<iostream>
+#include<algorithm>
+#include<vector>
+using namespace std;
+void minimum_stops(int distance,int tank_life,vector<int>& gas_station){
+    int current_position=0; //our current location
+    int last_stop=0; //where we last stopped
+    vector<int> stops;
+    gas_station.push_back(distance);
+    for(int i=0;i<gas_station.size();i++){
+//if the distance from the last stopped gas station to the next stop is greater than how much a full tank go,then we cant reach the destination
+        if(gas_station[i]-last_stop>tank_life){
+            cout<<"Cant reach destination.";
+            return;
+        }
+//if the current location to gas station is greater than the tank_life,then we need to stop at the last gas station within reach
+        if(gas_station[i]-current_position>tank_life){
+            stops.push_back(last_stop); //adding the last stopped station 
+            current_position=last_stop; //current position will be the the last stopped station
+        }
+        last_stop=gas_station[i]; //changing last stop to the station 
+    }
+    cout<<"stop at gas station:"<<endl;
+    for(int s:stops){
+        cout<<"("<<s<<" miles )"<<endl;
+    }
+}
+int main(){
+    int distance,tank_life,stop_number;
+    cout<<"Enter the total distance,tank life and number of stops:";
+    cin>>distance>>tank_life>>stop_number;
+    vector<int> gas_station(stop_number);
+    for(int i=0;i<stop_number;i++){
+        cout<<"Enter the gas stations:";
+        cin>>gas_station[i];
+    }
+    sort(gas_station.begin(),gas_station.end());
+    minimum_stops(distance,tank_life,gas_station);
+}
