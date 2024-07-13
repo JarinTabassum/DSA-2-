@@ -421,7 +421,7 @@ int main(){
 #include<vector>
 using namespace std;
 vector<long long> computeFactorial(){
-    vector<long long> factorials(21,1); //a vector size of 21 where all the elements is initialized to 1
+    vector<long long> factorials(21,1); //a vector size of 21 (0! to 20!) where all the elements is initialized to 1 , 21 cz 20! is already a huge number, we dont want to redundant
    for(int i=1;i<=20;i++) { //as 0 cant have a factorial
        factorials[i]=factorials[i-1]*i;
    }
