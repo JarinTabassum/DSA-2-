@@ -412,3 +412,48 @@ int main(){
         cout<<"["<<i.first<<", "<<i.second<<"]"<<endl;
     }
 }
+
+
+
+//https://lightoj.com/problems/category/greedy (maximum user solved)
+//Sum of factorials
+#include<iostream>
+#include<vector>
+using namespace std;
+vector<long long> computeFactorial(){
+    vector<long long> factorials(21,1); //a vector size of 21 where all the elements is initialized to 1
+   for(int i=1;i<=20;i++) { //as 0 cant have a factorial
+       factorials[i]=factorials[i-1]*i;
+   }
+   return factorials; //returing the vector of precomputed factorials
+}
+void solveTestCase(int caseNumber,int n,vector<long long>& factorials){
+    vector<int> usedFactorials; //factorilas which are used to make n
+    for(int i=20;i>=0;i--){ 
+        if(factorials[i]<=n){ //if the factorial is less than or equal to n. like in 7, factorial of 3!=6 will be included as 3!<=7
+            n-=factorials[i]; //we will substract that factorial from n (7-6=1)
+            usedFactorials.push_back(i); //in used factorials vector we will add the index of the factorial (here 3)
+        }
+    }
+    cout<<"Case "<<caseNumber<<": ";
+    if(n==0){ //if substracting the factorials from n ultimately leads it to 0, that will mean it is possible to measure with a sum of factorials
+        for(int i=usedFactorials.size()-1;i>0;i--){
+            cout<<usedFactorials[i]<<"!+";
+        }
+        cout<<usedFactorials[0]<<"!"<<endl; //print thr last factorial without the + sign
+    }
+        else{
+            cout<<"Impossible";
+        }
+    }
+int main(){
+    int c;
+    cout<<"Enter how many numbers you want to enter:";
+    cin>>c;
+    vector<long long> factorials=computeFactorial(); //precomputing factorials
+    for(int i=1;i<=c;i++){
+        int n;
+        cin>>n;
+        solveTestCase(i,n,factorials); //checking the current test case
+    }
+}
