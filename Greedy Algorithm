@@ -457,3 +457,51 @@ int main(){
         solveTestCase(i,n,factorials); //checking the current test case
     }
 }
+
+
+//old sorting (problem)
+
+//brush ll
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+struct Dust{
+    int x,y;
+};
+bool compareY(Dust a,Dust b){
+    return a.y<b.y; //ascending order
+}
+int main(){
+    int T;
+    cout<<"Enter the number of test cases:";
+    cin>>T;
+    
+    for(int t=1;t<=T;t++){
+        int n,W;
+        cout<<"Enter the number of dust points:";
+        cin>>n;
+        cout<<"Enter the width of the brush:";
+        cin>>W;
+        vector<Dust> dusts(n); //the coordinates of the brush
+        for(int i=0;i<n;i++){
+            cout<<"Enter the coordinates of the dust point:";
+            cin>>dusts[i].x>>dusts[i].y;
+        }
+        sort(dusts.begin(),dusts.end(),compareY); //sort dusts based on y coordinate
+        int moves=0;
+        int current_y=dusts[0].y; //y coordinate of the first dust point
+        int i=0;
+        while(i<n){ //to cover all the dust points
+            moves++; //incrementing move for the each new position of the brush
+            int start_y=current_y;
+            while(i<n && dusts[i].y<=start_y+W){ //moving brush to cover all the dust from current_y to current_y+w
+                i++;
+            }
+            if(i<n){
+                current_y=dusts[i].y; //moving brush to cover dusts[i].y
+            }
+        }
+        cout<<"Case "<<t<<": "<<moves<<endl;
+    }
+}
