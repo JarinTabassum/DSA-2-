@@ -505,3 +505,57 @@ int main(){
         cout<<"Case "<<t<<": "<<moves<<endl;
     }
 }
+
+
+//Containers
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+// Function to check if it's possible to fill m containers with each having max capacity <= maxCapacity
+bool canFillContainers(const vector<int>& capacities, int m, int maxCapacity) {
+    int containersUsed = 1;
+    int currentCapacity = 0;
+
+    for (int i = 0; i < capacities.size(); ++i) {
+        if (currentCapacity + capacities[i] > maxCapacity) {
+            containersUsed++;
+            currentCapacity = capacities[i];
+            if (containersUsed > m) {
+                return false;
+            }
+        } else {
+            currentCapacity += capacities[i];
+        }
+    }
+
+    return true;
+}
+int minimalMaxCapacity(vector<int> capacities,int n,int m){
+    int left=*max_element(capacities.begin(),capacities.end());
+    //initialized to the maximum capacity of any vessel,this ensures that at least one container can hold the largest vessel
+    int right=accumulate(capacities.begin(),capacities.end());
+    //initialized to the total sum of all vessel capacities,this represents a scenario where all vessels are used to fill one container
+    while(left<right){
+        int mid=(left+right)/2;
+        if(canFillContainers(capacities,m,mid));
+        right=mid;
+        else{
+            left=mid+1;
+        }
+    }
+    return left; //once left equals right, it means we have found the minimal possible maxCapacity where canFillContainers returns true,this left value is returned as the result.
+}
+int main(){
+    int n,m;
+    cout<<"Enter the number of vessels:";
+    cin>>n;
+    cout<<"Enter the number of containers:";
+    cin>>m;
+    vector<int> capacities(n); //capacities of each vessel
+    for(int i=0;i<n;i++){
+        cin>>capacities[i];
+    }
+    int result=minimalMaxCapacity(capacities,n,m); //find the minimal possible max capacity of the containers
+    cout<<"Case"<<i<<": "<<result<<endl;
+}
