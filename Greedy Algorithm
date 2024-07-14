@@ -559,3 +559,39 @@ int main(){
     int result=minimalMaxCapacity(capacities,n,m); //find the minimal possible max capacity of the containers
     cout<<"Case"<<i<<": "<<result<<endl;
 }
+
+
+//Scarescrow
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+int minScare(string field,int N){
+    int scarescrow=0;
+    int i=0;
+    while(i<N){
+        if(field[i]=='.'){
+            scarescrow++;
+            i=i+3; //increment i by 3,this is because placing a scarecrow at i covers cells i-1, i, and i+1
+        }
+        else{
+            i++; //just increment normally 
+        }
+    }
+    return scarescrow;
+}
+int main(){
+    int T;
+    cout<<"Enter the number of test cases:"<<endl;
+    cin>>T;
+    for(int i=1;i<=T;i++){
+    int N;
+    cout<<"Enter the length of the field:";
+    cin>>N;
+    string field;
+    cin>>field;
+    
+    int result=minScare(field,N);
+    cout<<"Case "<<i<<": "<<result<<endl;
+    }
+}
