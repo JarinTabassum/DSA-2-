@@ -567,53 +567,66 @@ int main(){
 #include<iostream>
 #include<vector>
 #include<algorithm>
+#include<numeric>
 using namespace std;
-// Function to check if it's possible to fill m containers with each having max capacity <= maxCapacity
-bool canFillContainers(const vector<int>& capacities, int m, int maxCapacity) {
-    int containersUsed = 1;
-    int currentCapacity = 0;
-
-    for (int i = 0; i < capacities.size(); ++i) {
-        if (currentCapacity + capacities[i] > maxCapacity) {
-            containersUsed++;
-            currentCapacity = capacities[i];
-            if (containersUsed > m) {
-                return false;
-            }
-        } else {
-            currentCapacity += capacities[i];
-        }
+bool isPossible(vector<int> vessels,int n,int m,int maxCapacity){
+    int Container=1; //start with one container
+    int currentCapacity=0; //the current container is empty 
+    for(int i=0;i<n;i++){
+        if(vessels[i]>maxCapacity) return false;
+//single vessel can not be hold even by a max Capacity container
+       if(currentCapacity+vessels[i]>maxCapacity){
+//if vessel is added to the current capacity then it surpasses it max capacity so we need a new container
+           Container++; //use an another new container
+           currentCapacity=vessels[i];
+           //start feeling the new container
+           if(Container>m) return false; //need more containers than given
+       }
+       else{ //if currentCapacity+vessel[i]<=maxCapacity
+           currentCapacity+=vessels[i]; //add this to the current container
+       }
     }
-
-    return true;
+        return true; //all the vessels fit within the giving containers capacity
 }
-int minimalMaxCapacity(vector<int> capacities,int n,int m){
-    int left=*max_element(capacities.begin(),capacities.end());
-    //initialized to the maximum capacity of any vessel,this ensures that at least one container can hold the largest vessel
-    int right=accumulate(capacities.begin(),capacities.end());
-    //initialized to the total sum of all vessel capacities,this represents a scenario where all vessels are used to fill one container
-    while(left<right){
-        int mid=(left+right)/2;
-        if(canFillContainers(capacities,m,mid));
-        right=mid;
+int findMinimalMaxCapacity(vector<int>& vessels,int n,int m){
+    int low= *max_element(vessels.begin(),vessels.end());
+//the max element of the vessel is set as low, the smallest container at least be able to hold the largest single vessel
+    int high=accumulate(vessels.begin(),vessels.end(),0);
+//largest possible container can hold all the vessel items together
+    int result=high; //worst case
+//as the binary search intends to find the smallest possible maximum capacity
+    while(low<=high){
+        int mid=(low+high)/2;
+        if(isPossible(vessels,n,m,mid)){
+            result=mid;
+            high=mid-1;
+//we already know that mid is feasible, so we attempt to find smaller feasible value
+        }
         else{
-            left=mid+1;
+            low=mid+1;
+//as mid is not feasible so we are moving foreward from it
         }
     }
-    return left; //once left equals right, it means we have found the minimal possible maxCapacity where canFillContainers returns true,this left value is returned as the result.
+    return result;
 }
 int main(){
-    int n,m;
-    cout<<"Enter the number of vessels:";
-    cin>>n;
-    cout<<"Enter the number of containers:";
-    cin>>m;
-    vector<int> capacities(n); //capacities of each vessel
-    for(int i=0;i<n;i++){
-        cin>>capacities[i];
+    int t;
+    cout<<"Enter the number of test cases:";
+    cin>>t;
+    for(int i=1;i<=t;i++){
+        int n,m;
+        cout<<"Enter the number of vessels:";
+        cin>>n;
+        vector<int> vessels(n);
+        cout<<"Enter the number of containers:";
+        cin>>m;
+        for(int i=0;i<n;i++){
+            cout<<"Enter the capacities of the vessels:";
+            cin>>vessels[i];
+        }
+        int result=findMinimalMaxCapacity(vessels,n,m);
+        cout<<"Case "<<i<<": "<<result<<endl;
     }
-    int result=minimalMaxCapacity(capacities,n,m); //find the minimal possible max capacity of the containers
-    cout<<"Case"<<i<<": "<<result<<endl;
 }
 
 
