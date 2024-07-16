@@ -459,7 +459,63 @@ int main(){
 }
 
 
-//old sorting (problem)
+//old sorting 
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+int minSwap(vector<int> arr,int n){
+//arr=[4,2,3,1]
+    vector<pair<int,int>> arrPosition(n); //this vector will have the array element in the fisrt, the index in the second
+
+    for(int i=0;i<n;i++){
+        arrPosition[i].first=arr[i];
+        arrPosition[i].second=i;
+    }
+    
+    sort(arrPosition.begin(),arrPosition.end()); //we are sorting the elements of the array
+//arrPos=[(1,3),(2,1),(3,2),(4,0)]
+
+    vector<bool> visited(n,false); //taking a n size of a bool vector which will initially be set to false
+//visited=[false,false,false,false]
+    int swaps=0;
+    for(int i=0;i<n;i++){
+        if(visited[i] || arrPosition[i].second==i){ //if visited (that means it went through the while loop) and if the before and after sorting position is the same then skip it and keep continuing
+            continue;
+        }
+//visited[0] is false and arrPos[0].second=3 (not 0) that means the position isnt sorted
+        int cycle_size=0;
+        int j=i; //j = where the element does not have the after sort index
+        while(!visited[j]){ //not visited yet
+            visited[j]=true; //make it visited
+            j=arrPosition[j].second; //j will have the sort after index
+            cycle_size++;
+        }
+//visited[0]=true, j=3 , cycle_size=1
+//visited[3]=true, j=arrPos[3].second=0 ,cycle_size=2
+//visited[0] is true, so the cycle ends, out of the while loop
+        if(cycle_size>0){
+        swaps+=(cycle_size-1); //if cycle size is two then 1 swao will be needed, same with the rest
+        }
+    }
+    return swaps;
+}
+int main(){
+    int t;
+    cout<<"How many test cases will there be:";
+    cin>>t;
+    for(int i=1;i<=t;i++){
+        int n;
+        cout<<"How many elements will the array have:";
+        cin>>n;
+        vector<int> arr(n);
+        for(int i=0;i<n;i++){
+            cin>>arr[i];
+        }
+        int result=minSwap(arr,n);
+        cout<<"Case "<<i<<": "<<result<<endl;
+    }
+}
 
 //brush ll
 #include<iostream>
