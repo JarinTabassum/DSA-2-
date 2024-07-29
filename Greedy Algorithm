@@ -735,3 +735,58 @@ int main(){
     print(distances,minMaxdist,night+1);
     }
 }
+
+
+//The monkey and the oiled bamboo
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+bool canReachTop(vector<int> rungs,int k){
+    int currentStrength=k; 
+    int previousHeight=0; //representing the ground at first
+    for(int height:rungs){
+        int jump=height-previousHeight; //distance between current rung and previous height
+        if(jump>currentStrength){
+            return false;
+        }
+        else if(jump==currentStrength){
+            currentStrength--;
+        }
+        previousHeight=height; //if jump is not gretaer than currentStrength then update previous height to current rungs height
+    }
+    return true; //if all jumps are valid and can be reached to the top then currentStrength k is valid, return true
+}
+int findMinMax(vector<int> rungs){
+    int left=1; //minimum possible strength is 1
+    int right=*max_element(rungs.begin(),rungs.end()); //the maximum height of the rung
+    int result=right;
+    while(left<=right){
+        int mid=(left+right)/2;
+        if(canReachTop(rungs,mid)){ //if the monkey can reach the top with given strength which is mid here
+            result=mid;
+            right=mid-1;
+        }
+        else{
+           left=mid+1; 
+        }
+    }
+    return result;
+}
+int main(){
+    int c;
+    cout<<"Enter the number of cases:";
+    cin>>c;
+    for(int i=1;i<=c;i++){
+        int r;
+        cout<<"Enter the number of rungs:";
+        cin>>r;
+        vector<int> rungs(r);
+        for(int j=0;j<r;j++){
+            cin>>rungs[j];
+        }
+        int result=findMinMax(rungs);
+        cout<<"Case "<<i<<" : ";
+        cout<<result<<endl;
+    }
+}
