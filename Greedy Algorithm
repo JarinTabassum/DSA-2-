@@ -664,3 +664,74 @@ int main(){
     cout<<"Case "<<i<<": "<<result<<endl;
     }
 }
+
+
+//Conquering Keokradong
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<numeric>
+using namespace std;
+bool canDivide(const vector<int>& distances,int maxDist,int days){
+    int dayCount=1; //starting from day 1
+    int currentDist=0; //total distance walked in the current day
+    for(int dist:distances){
+        if(currentDist+dist>maxDist){ //current day has reached its limit, we need a new day to start
+            dayCount++;
+            currentDist=dist; //this means the distance that exceed the previous day's limit becomes the first distance for the new day
+            if(dayCount>days){
+                return false; //it is not possible to divide the distances within the specified number of days without exceeding the maxDist
+            }
+        }else{
+            currentDist+=dist; //if it didnt exceed maxDist, then keep adding until it does
+        }
+    }
+    return true; //possible to divide the distances within the specified contraints 
+}
+void print(vector<int> distances,int maxDist,int days){ //here maxDist is the final minimum maximum distance by which now we will calculate how much we can walk per day
+    int usedDays=0; //no days has been used at the start
+    int currentDist=0; //no distance has been crossed at the start
+    vector<int> result;
+    for(int dist:distances){
+    if(currentDist+dist>maxDist || distances.size()-result.size()-1 + usedDays < days){ //ensures that for any single day does not exceed maxDist || ensures that we may not run out of days before covering all the distances (distances size - number of days already recorded - 1(the day we are in rn) + days we already used)
+        result.push_back(currentDist); //result will store how much was walked per day without crossing the maxDist
+        usedDays++;
+        currentDist=dist; //start the new day with the current unfinished distance
+    } else{
+        currentDist+=dist; //if it is less than maxDist then keep adding distances to the current day to cover
+    }
+    }
+    result.push_back(currentDist); //so that the distance walked in the last day is also added here
+    
+    for(int r:result){
+        cout<<r<<endl;
+    }
+}
+int main(){
+    int c;
+    cout<<"Enter the number of cases:";
+    cin>>c;
+    for(int i=1;i<=c;i++){
+        int distance,night;
+        cout<<"Enter the amount of distances and days:";
+        cin>>distance>>night;
+        vector<int> distances(distance+1); //onr from 0 to first distance
+        for(int j=0;j<=distance;j++){
+            cin>>distances[j];
+        }
+        int left=*max_element(distances.begin(),distances.end());
+        //maximum single distance, for which to complete entire one day will be needed
+        int right=accumulate(distances.begin(),distances.end(),0); //all distances are covered in one day
+        int minMaxdist=right; //worst case scenario where one day covering all distances
+        while(left<=right){
+            int mid=(left+right)/2;
+            if(canDivide(distances,mid,night+1)){ //3 nights, 4 days,thats why +1
+            minMaxdist=mid; //if true then the mid will be the minMaxdist which is the minimum possible maximum distance 
+            right=mid-1; //we are decreasing the highest one  for a potentially smaller valid maximum distance
+            }else
+            left=mid+1; //false cz maxDist is way too small and it is taking more days to complete (as current+dist>maxDist means day++),thats why we are increasing the value 
+        }
+    cout<<"Case "<<i<<": Minimum maximum distance will be: "<<minMaxdist<<endl;
+    print(distances,minMaxdist,night+1);
+    }
+}
