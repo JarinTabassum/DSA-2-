@@ -841,3 +841,44 @@ also yeah we have the power to decide when the opponent team can switch the play
         cout<<"Case "<<t<<" : "<<point<<endl;
     }
 }
+
+
+//Confusion in the Problemset
+#include<iostream>
+#include<vector>
+using namespace std;
+int main(){
+    int t;
+    cout<<"Enter the number of cases:";
+    cin>>t;
+    for(int T=1;T<=t;T++){
+        int p;
+        cout<<"Enter how many pages are there:";
+        cin>>p;
+        vector<int> pages(p);
+        vector<int> count(p,0); //here we will be counting how many times the page has arrived, which initially is set to 0 as we havent started counting yet
+        bool isValid=true;
+        cout<<"Enter the page numbers:";
+        for(int i=0;i<p;i++){
+            cin>>pages[i]; 
+            if(pages[i]<0 || pages[i]>=p){ //if the page number is out of bounds then false (if 3 pages but page number is -1 or 5 then it will be false)
+                isValid=false;
+            }
+            else{
+                count[pages[i]]++; //for every rational page number we will be counting its position, as pages can be shuffled so if each index is presented once will only prove it is possible (2,0,1) can be shuffled to (2,1,0) and so on
+            }
+        }
+        
+        for(int i=0;i<p;i++){
+            if(count[i]!=1){ //and for it to be true every page need to be counted only once, more than that will be counted as false
+                isValid=false;
+                break;
+            }
+        }
+        
+        cout<<"Case "<<T<<": "<<(isValid ? "yes" : "no")<<endl;
+    }
+}
+
+
+//
