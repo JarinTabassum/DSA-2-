@@ -881,4 +881,71 @@ int main(){
 }
 
 
-//
+//Monitoring Processes
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+struct Event{
+    int Time; //start and finishing time
+    bool isStart; //for start it will have true, for end false
+};
+bool compareEvents(Event &a, Event &b){
+    if(a.Time==b.Time){ //if one events starting time and another ones ending is the same, then the ending event will get before than the starting
+        return a.isStart<b.isStart;
+        //end=false=0 < start=true=1
+    }
+    return a.Time<b.Time; //if time is not the same then whichever time is smaller will go at first
+}
+int main(){
+    int T;
+    cout<<"Enter the number of cases:";
+    cin>>T;
+    for(int t=1;t<=T;t++){
+    int e;
+    cout<<"How many events will be there:";
+    cin>>e;
+    vector<Event> event;
+    cout<<"Enter the beginning and ending time of the events:"<<endl;
+    for(int i=0;i<e;i++){
+        int si,fi;
+        cin>>si>>fi;
+        event.push_back({si,true}); //start time, true
+        event.push_back({fi,false}); //end time, false 
+    }
+    sort(event.begin(),event.end(),compareEvents); 
+    
+    int countWrapper=0;
+    int maxWrapper=0;
+    
+    for(Event e : event){
+        if(e.isStart){
+            countWrapper++; //if it is a start event increment the wrapper as we will be needing a new wrapper for the starter
+        if(countWrapper>maxWrapper){
+            maxWrapper=countWrapper; //as currentWrapper will keep incrementing and decrementing by the start and end, so to store the max amount we will use that variable
+        }
+        }
+        else{
+            countWrapper--; //if it is an end event, then for it we wont be needing a wrapper as we have already counted for its starter, so decrement it
+        }
+    }
+    cout<<"Case "<<t<<": "<<maxWrapper<<endl;
+ }
+}
+
+/*brief explanation
+1 10
+10 20
+11 21
+3 5
+(1,true),(10,false),(10,true),(20,false),(11,true),(21,false),(3,true),(5,false)
+sort: 
+1,true -> c=1 (as start), m=1
+3,true -> c=2, m=2
+5,false -> c=1, m=2
+10,false -> c=0, m=2
+(true and false both are present, so false will go before)
+10,true -> c=1, m=2 
+11,true -> c=2, m=2
+20,false -> c=1, m=2
+21,false -> c=0, m=2 */
