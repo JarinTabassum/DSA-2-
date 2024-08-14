@@ -24,3 +24,13 @@ int main(){
     int result=Fib(n,F);
     cout<<"The fibonacci at position "<<n<<" is: "<<result;
 }
+
+//Top-Down means we start from the original problem (Fib(n)) and break it down into smaller subproblems recursively.
+Memoization is used to store the results of subproblems, so we avoid redundant computations.
+You call Fib(5, F):
+
+Fib(5) breaks into Fib(4) and Fib(3).
+Fib(4) breaks into Fib(3) and Fib(2).
+Fib(3) breaks into Fib(2) and Fib(1).
+Fib(2) breaks into Fib(1) and Fib(0).
+If Fib(1) or Fib(0) is reached, they are returned immediately since they are base cases.
