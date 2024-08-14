@@ -1,0 +1,26 @@
+//Fibonacci number (Memoization / Top-down)
+#include<iostream>
+#include<vector>
+using namespace std;
+int Fib(int n,vector<int>& F){
+    if(n==0 || n==1){ //base case: these are the stopping conditions for recusrsive calls or else we will fall into a infinity loop
+        return n;
+    }
+    if(F[n-1]==-1){ //suppose we want to find fibonacci of 4th postion,then F[3]==-1 so we will go to Fib(3) and F[2]==-1 so will go to Fib(2) and F[2-1]=Fib(1,F) and when n=1 return 1, F[2-2]=Fib(0,F) and n=0 return 0
+        F[n-1]=Fib(n-1,F);
+    }
+    if(F[n-2]==-1){
+        F[n-2]=Fib(n-2,F);
+    }
+    return F[n-1]+F[n-2];
+}
+int main(){
+    int n;
+    cout<<"Enter the position of the fibonacci you want to know:";
+    cin>>n;
+    vector<int> F(n+1,-1); //as it starts from 0 thats why from 0 to n = n+1 and all of them are set to NIL(-1)
+    F[0]=0; 
+    F[1]=1; //base case (these base cases arent really necessary as the code will run the same without it but we need it avoid edge cases or excessive recusive calls, it will also come in handy if we want to print the entire fibonacci list upto n)
+    int result=Fib(n,F);
+    cout<<"The fibonacci at position "<<n<<" is: "<<result;
+}
