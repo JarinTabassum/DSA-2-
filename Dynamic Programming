@@ -34,3 +34,27 @@ Fib(4) breaks into Fib(3) and Fib(2).
 Fib(3) breaks into Fib(2) and Fib(1).
 Fib(2) breaks into Fib(1) and Fib(0).
 If Fib(1) or Fib(0) is reached, they are returned immediately since they are base cases.
+
+
+//Fibonacci number (Tabulation / Bottom-up)
+if n=5 then in top down we are approaching from f[5] which will lead to f[4] and f[3]  and f[4] will lead to f[3] and f[2] and so on 
+and in bottom up our approach will be from f[2] to f[3[ and f[4] and lastly f[5]
+#include<iostream>
+#include<vector>
+using namespace std;
+int Fib(int n){
+    vector<int> F(n+1); //creating an array F[0...n]
+    F[0]=0; //base case
+    F[1]=1; //base case
+    for(int i=2;i<=n;i++){
+        F[i]=F[i-1]+F[i-2]; //at 2, second fibonacci will be be stored, at the third one will be made from the second and first one and the forth one will be made from third and second one,thats how bottom up works
+    }
+    return F[n];
+}
+int main(){
+    int n;
+    cout<<"Enter the value of n:";
+    cin>>n;
+    int result=Fib(n);
+    cout<<"Fibonacci number at position "<<n<<" is: "<<result;
+}
