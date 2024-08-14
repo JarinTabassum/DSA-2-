@@ -59,7 +59,7 @@ int main(){
     cout<<"Fibonacci number at position "<<n<<" is: "<<result;
 }
 
-//bottom up but this one will have lesser time complexity
+//bottom up but this one will have lesser time complexity O(1) whereas the previous ones have O(n)
 #include<iostream>
 using namespace std;
 int Fib(int n){
