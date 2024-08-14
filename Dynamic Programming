@@ -58,3 +58,28 @@ int main(){
     int result=Fib(n);
     cout<<"Fibonacci number at position "<<n<<" is: "<<result;
 }
+
+//bottom up but this one will have lesser time complexity
+#include<iostream>
+using namespace std;
+int Fib(int n){
+    if(n==0 || n==1){ //this base case are not necessary to add
+        return n;
+    }
+    int f0=0; 
+    int f1=1;
+    int f2;
+    for(int i=2;i<=n;i++){
+        f2=f0+f1; //computing Fib(i)
+        f0=f1; //f0 will be the old f1
+        f1=f2; //f1 is the new fibonacci number
+    }
+    return f1;
+}
+int main(){
+    int n;
+    cout<<"Enter the value of n:";
+    cin>>n;
+    int result=Fib(n);
+    cout<<"Fibonacci number in positon "<<n<<" is: "<<result;
+}
