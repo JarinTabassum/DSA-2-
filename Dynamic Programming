@@ -156,3 +156,83 @@ int main(){
         cout<<"There is no way to get the target amount with the given coin denominations";
     }
 }
+
+
+//Alternative problem 2.2 (minimum cost to create a target length rope)
+#include <iostream>
+#include <vector>
+#include <limits.h>
+
+using namespace std;
+
+int MinCostToMakeRope(int M, vector<int>& C, int X, vector<int>& usedRope) {
+    vector<int> dp(M + 1, INT_MAX); //an array which dp[0...M] and all of the position is set to INT_MAX
+    
+    dp[0] = 0; //base case: as 0 length will take 0 amount of rope
+
+    // Iterate over each length from 1 to M
+    for (int m = 1; m <= M; ++m) {
+        // Check each rope length in the set C
+        for (int i = 0; i < C.size(); ++i) {
+            if (m >= C[i] && dp[m - C[i]] != INT_MAX && dp[m] > dp[m - C[i]] + X) {
+                    dp[m] = dp[m - C[i]] + X;
+                    usedRope[m] = C[i]; // Store the rope length used to get to length m
+                }
+            }
+        }
+
+    return dp[M] == INT_MAX ? -1 : dp[M]; //is dp[M]=INT_MAX, if yes then return -1 else return dp[M]
+}
+
+void PrintUsedRopes(int M, vector<int>& usedRope) {
+    vector<int> result;
+
+    // Backtrack to find the ropes used
+    while (M > 0) {
+        result.push_back(usedRope[M]); //we are storing the lengths that were used to make the rope in length
+        M -= usedRope[M];
+    }
+
+    // Print the used ropes
+    cout << "Ropes used to make length: ";
+    for (int i = 0; i <result.size(); i++) {
+        cout << result[i] << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+    int M, d, X;
+    cout << "Enter the target length M: ";
+    cin >> M;
+
+    cout << "Enter the number of different rope lengths d: ";
+    cin >> d;
+
+    vector<int> C(d);
+    cout << "Enter the rope lengths: ";
+    for (int i = 0; i < d; ++i) {
+        cin >> C[i];
+    }
+
+    cout << "Enter the cost of joining two ropes X: ";
+    cin >> X;
+
+    vector<int> usedRope(M + 1, -1); // Initialize with -1 to indicate no rope used
+
+    int result = MinCostToMakeRope(M, C, X, usedRope);
+
+    if (result != -1) {
+        cout << "Minimum cost to make a rope of length " << M << " is: " << result << endl;
+        PrintUsedRopes(M, usedRope);
+    } else {
+        cout << "It is not possible to make a rope of length " << M << " with the given rope lengths" << endl;
+    }
+
+    return 0;
+}
+
+    
+    
+
+   
