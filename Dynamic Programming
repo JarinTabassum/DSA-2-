@@ -83,3 +83,76 @@ int main(){
     int result=Fib(n);
     cout<<"Fibonacci number in positon "<<n<<" is: "<<result;
 }
+
+
+//Coin change problem
+#include<iostream>
+#include<vector>
+#include<limits.h>
+using namespace std;
+int coinChange(int M,int d,vector<int>& C){
+    vector<int> mnc(M+1, INT_MAX); //creating an array mnc[0..M] and set them all to infinity
+    mnc[0]=0; //it takes 0 coins to create the amount 0
+    for(int m=1;m<=M;m++){ //from 1 to M (here m is the current target which starts from 1 to main target)
+        for(int i=0;i<d;i++){ //how many coin denominations are there that many times it will go
+            if(C[i]<=m && mnc[m-C[i]]!=INT_MAX && mnc[m-C[i]]+1<mnc[m]){
+                mnc[m]=mnc[m-C[i]]+1;
+            }
+            //C[i]<=m checks if the current denomination is less than or equal to the current target, if it is greater than m then we cant use it to make the current amount as it will overflow
+            //mnc[m-C[i]] checks if there is a valid way to make m-C[i], if it is INT_MAX then it is not possible
+            //mnc[m-C[i]]+1<mnc[m] means if i can meake the amount m-C[i] using certain number of coins then adding 1 more coin (C[i]) will make m and if that takes fewer coins to make the amount m,it means we have found the better match
+            //mnc[m]=mnc[m-C[i]]+1 this updates the mnc[m] ti be the new minimum coins that will be needed to make the amount m 
+        }
+    }
+    if(mnc[M]==INT_MAX){ //if mnc[M] is still infinity it means then it is not possible to make the amount mnc[M] with the given coin denominations
+        return -1;
+    }
+    return mnc[M]; //return the position of the M in the array which will contain the minimum numbers that will be needed to make the goven amount (as mnc[m] will go from 1 to M)
+}
+void printCoins(int M,vector<int> &C,vector<int> &mnc){
+    cout<<"coins used to make amount "<<M<<" is : ";
+    while(M>0){ //we havent reduced the target amount to 0 yet
+        for(int i=0;i<C.size();i++){ //the goal is to achieve the last one added to make up the current amount M
+            if(C[i]<=M && mnc[M-C[i]]+1==mnc[M]){
+                cout<<C[i]<<" ";
+                M-=C[i];
+                break;
+            }
+        }
+        //C[i]<=M checks if the current coin denomination can be used to reduce M and we can inly do so when M is gretaer than C[i], right
+        //mnc[M-C[i]]+1==mnc[M] this checks if the minimum number of coins needed to make the amount M-C[i] is exactly one less than the number of coins needed to make M, if this is true then it indicates the coin C[i] was part of the optimal solution, in other words mnc[M] is formed using C[i] to mnc[M-c[i]]
+        //break exits the for loop as we have identified and used one coin, now in the loop we continue to find the next coin to reduce the update damount M, and this process will continue till M becomes 0
+    }
+    cout<<endl;
+}
+int main(){
+    int M,d;
+    cout<<"Enter the target amount:";
+    cin>>M;
+    cout<<"Enter the number of different coin demoninations d:";
+    cin>>d;
+    vector<int> C(d);
+    cout<<"Enter the denominations:";
+    for(int i=0;i<d;i++){
+        cin>>C[i];
+    }
+    int result=coinChange(M,d,C);
+    if(result!=-1){
+        cout<<"Minimum number of coins required: "<<result<<endl;
+    //print the coins used to make the amount   
+    vector<int> mnc(M+1,INT_MAX);
+    mnc[0]=0;
+    for(int m=1;m<=M;m++){
+        for(int i=0;i<d;i++){
+            if(C[i]<=m && mnc[m-C[i]]!=INT_MAX && mnc[m-C[i]]+1<mnc[m]){
+                mnc[m]=mnc[m-C[i]]+1;
+            }
+        }
+    }
+    printCoins(M,C,mnc);
+    }
+    
+    else{
+        cout<<"There is no way to get the target amount with the given coin denominations";
+    }
+}
