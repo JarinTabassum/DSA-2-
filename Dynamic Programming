@@ -232,6 +232,49 @@ int main() {
     return 0;
 }
 
+
+//Rod Cutting (maximum profit after selling cut of length)
+#include<iostream>
+#include<vector>
+using namespace std;
+int rodCutMaxProfit(int n,vector<int> &prices){
+    vector<int> rev(n+1,0); //array to store revenue for length i
+    vector<int> cuts(n+1,0); //array to store the cuts that made the max rev
+    for(int i=1 ; i<=n ; i++){ //iterates every possible rod length from 1 to n
+        int maxRev=0;
+        for(int j=1; j<=i ; j++){ //for every length i, it will go through every possible cut j from 1 to i
+            if(maxRev<prices[j-1]+rev[i-j]){ 
+                maxRev=prices[j-1]+rev[i-j];
+                cuts[i]=j;
+            }
+        }
+        rev[i]=maxRev;
+    }
+    //prices[j-1] it checks if the maximum rev can be increased if we take the j cut of length, -1 as prices is 0 indexed, and dp[i-j] the reamaing max rev after cutting off the j cut of length and if their sum (price of j and remaining parts rev of the rod) is greater then make it maxrev and it cuts[i] save the cut of the length that was chosen to make the max rev and also update the rev
+    cout<<"Rod cuts for maximum revenue:";
+    int length=n;
+    while(length>0){
+        cout<<cuts[length]<<" ";
+        length-=cuts[length];
+    }
+    cout<<endl;
+    
+    return rev[n];
+}
+int main(){
+    int n;
+    cout<<"Enter the length of the rod: ";
+    cin>>n;
+    vector<int> prices(n);
+    cout<<"Enter price for each length: ";
+    for(int i=0;i<n;i++){
+        cin>>prices[i];
+    }
+    int maxRevenue=rodCutMaxProfit(n,prices);
+    cout<<"Maximum revenue is : "<<maxRevenue<<endl;
+    return 0;
+}
+
     
     
 
