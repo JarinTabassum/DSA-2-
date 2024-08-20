@@ -344,3 +344,112 @@ int main(){
 }
 
    
+//Subset sum problem
+#include<iostream>
+#include<vector>
+using namespace std;
+vector<vector<bool>> findSubsets(vector<int> elements, int T){
+    int n=elements.size();
+    vector<vector<bool>> dp(n+1, vector<bool>(T+1,false)); //creating a 2D array where all index is set to false
+    for(int i=0;i<=n;i++){ 
+        dp[i][0]=true; //base case: target 0 is always possible to achieve
+    }
+    for(int i=1;i<=n;i++){
+        for(int sum=1;sum<=T;sum++){
+            if(sum>=elements[i-1]){ //if the element is equal or lesser than the sum then it can be included and as elements is 0 indexed so we use i-1
+                dp[i][sum]=dp[i-1][sum] || dp[i-1][sum-elements[i-1]]; //dp[i-1][sum] means we can achieve the sum without including it and the or one means can we achieve the rest of the sum wihtout using the current element, if so that would mean we can achieve the target with adding the element
+            }
+            else{
+            dp[i][sum]=dp[i-1][sum]; //we are not including the element if it is bigger than sum
+            }
+        }
+    }
+    return dp; //return dp after its true and false map,by which we can detect which elements were chosen to make the target
+}
+void printSubsets(int n,int T,vector<int> elements,vector<vector<bool>> dp,vector<int> currentSubset){
+    if(T==0){ //if the target is 0 that would mean we have achieved the goal so start printing it
+        cout<<"{ ";
+        for(int num:currentSubset){
+            cout<<num<<" ";
+        }
+        cout<<"}"<<endl;
+        return; //we have to return after done with the printing otherwise it will keep printing
+    }
+    if(n==0) return; //after going through and reducing n-1 when it will come to 0 then return to avoid an infinite loop
+    if(dp[n-1][T]){ //if it is true that would mean we can achieve the sum without taking the current element so skip it
+        printSubsets(n-1,T,elements,dp,currentSubset); //call the function again with the remaining elements
+    }
+    if(T>=elements[n-1] && dp[n-1][T-elements[n-1]]){ //if we include the element
+        currentSubset.push_back(elements[n-1]); //currentSubset is the vector which will have the elements that will build the target so push that element to it
+        printSubsets(n-1,T-elements[n-1],elements,dp,currentSubset); //call the print function again to go through the remianing elements
+        currentSubset.pop_back(); //that would deduce the element we already took 
+    }
+}
+int main(){
+    int n,T;
+    cout<<"Enter the value:";
+    cin>>n;
+    vector<int> elements(n);
+    cout<<"Enter the elements:";
+    for(int i=0; i<n; i++){
+        cin>>elements[i];
+    }
+    cout<<"Enter the target:";
+    cin>>T;
+    vector<vector<bool>> dp=findSubsets(elements,T);
+    if(!dp[n][T]){ //if after going through all elements the target index still remains false then it is impossible to achieve
+        cout<<"The target "<<T<<" cant be achieved by the given elements";
+    }
+    else{
+        vector<int> currentSubset;
+        printSubsets(n,T,elements,dp,currentSubset);
+    }
+}
+
+
+//longest common subsequence
+#include<iostream>
+#include<vector>
+using namespace std;
+pair<int,string> lcs(string x,string y){
+    int m=x.size();
+    int n=y.size();
+    vector<vector<int>> dp(m+1, vector<int>(n+1,0)); //we are creating a 2d array
+    for(int i=1;i<=m;i++){ //we started it from 1 as we need another row and column in dp for length 0
+        for(int j=1;j<=n;j++){
+            if(x[i-1]==y[j-1]){ //if mathces and -1 as array is indexed to 0
+                dp[i][j]=dp[i-1][j-1]+1; //adding +1(as matched) to the previous substring (diagonally)
+            }
+            else{
+                dp[i][j]=max(dp[i][j-1],dp[i-1][j]); //if does not match we either skip the current character x or y and continue with the max lcs length found so far
+            }
+        }
+    }
+    int lcs_length=dp[m][n]; //it means we have crossed both of the strings and have stored the largest lcs length
+    string lcs=" "; //to backtrack the string
+    int i=m,j=n; //i and j has the strings length
+    while(i>0 && j>0){ //and it will continue till the end as we are backtracking so from m to 0
+        if(x[i-1]==y[j-1]){ //if mathces
+            lcs=x[i-1]+lcs; //add either x or y's letter as the same to the lcs string
+            i--; //then decrease the size of both of the to go diagonally
+            j--;
+        }
+        else if(dp[i-1][j]>dp[i][j-1]){ //if does not match go either up or left (whichever one is the max one)
+            i--; //if up is max then go up
+        } 
+        else{
+            j--; //if left is max then go left
+        }
+    }
+    return {lcs_length,lcs}; //as it is a pair so {}
+}
+int main(){
+    string x,y;
+    cout<<"Enter the first string:";
+    cin>>x;
+    cout<<"Enter the second string:";
+    cin>>y;
+    auto result=lcs(x,y); //here auto means it will automatically get the return type without having to assign it manually (like here it will receive a pair of int and string)
+    cout<<"Longest common subsequence length:"<<result.first<<endl;
+    cout<<"Logest common subsequence:"<<result.second;
+}
