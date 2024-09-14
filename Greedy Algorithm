@@ -809,6 +809,15 @@ int main(){
         cout<<result<<endl;
     }
 }
+here is an example for better undersatanding:
+There are 4 rungs.
+The rungs are located at heights: 3, 9, 10, 14 feet from the ground.
+Explanation of the jumps:
+From the ground (0 feet) to the 1st rung (3 feet), the jump distance is 3 feet. So k must be at least 3, and since you jumped exactly 3 feet, k decreases to 2.
+From the 1st rung (3 feet) to the 2nd rung (9 feet), the jump distance is 6 feet. You need k to be at least 6 to make this jump, so k must be 6. After this jump, k decreases to 5.
+From the 2nd rung (9 feet) to the 3rd rung (10 feet), the jump distance is 1 foot. Since this is less than k = 5, k does not change.
+From the 3rd rung (10 feet) to the 4th rung (14 feet), the jump distance is 4 feet. Since this is less than k = 5, k does not change.
+The minimum initial strength k that allows you to complete these jumps is 6
 
 
 //Karate Competition
