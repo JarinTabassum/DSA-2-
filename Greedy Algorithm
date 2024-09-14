@@ -561,6 +561,25 @@ int main(){
         cout<<"Case "<<t<<": "<<moves<<endl;
     }
 }
+here is an example of how it is actually working:
+6 4
+10 1
+12 5
+13 3
+15 7
+16 9
+18 8
+Explanation:
+
+There are 6 dust points, and the brush width is 4.
+The points are: (10, 1), (12, 5), (13, 3), (15, 7), (16, 9), (18, 8).
+Step-by-step:
+
+Place the brush at y = 1, covering the range [1, 5].
+Points (10, 1), (12, 5), and (13, 3) are cleaned in one move.
+Place the brush at y = 7, covering the range [7, 11].
+Points (15, 7), (16, 9), and (18, 8) are cleaned in another move.
+
 
 
 //Containers
