@@ -604,3 +604,72 @@ int main()
     return 0;
 }
 
+//Matrix chain multiplication problem
+#include <iostream>
+#include <vector>
+#include <climits>
+using namespace std;
+ 
+int matrixChainMultiplication(vector<int> const &dims, int i, int j, auto &lookup)
+{
+    // base case: one matrix
+    //if there's only one matrix or fewer (i.e., if j <= i + 1), no multiplication is needed, so the cost is 0.
+    if (j <= i + 1) {
+        return 0;
+    }
+ 
+    //We initialize min to the maximum possible integer value (INT_MAX) because we are looking for the minimum cost, so we want to update it with smaller values as we find them
+    int min = INT_MAX;
+ 
+    // if the subproblem is seen for the first time, solve it and store its result in a lookup table
+    if (lookup[i][j] == 0)
+    {
+        // take the minimum over each possible position at which the
+        // sequence of matrices can be split
+ 
+        /*
+            (M[i+1]) × (M[i+2]………………M[j])
+            (M[i+1]M[i+2]) × (M[i+3]…………M[j])
+            …
+            …
+            (M[i+1]M[i+2]…………M[j-1]) × (M[j])
+        */
+ //if i=0 and j=3 then k cannot be 0 (would leave no matrices for the right subproblem) or 3 (would leave no matrices for the left subproblem). as we need both right and left subproblem to multiply and check
+        for (int k = i + 1; k <= j - 1; k++)
+        {
+            // recur for `M[i+1]…M[k]` to get an `i × k` matrix
+            int cost = matrixChainMultiplication(dims, i, k, lookup);
+ 
+            // recur for `M[k+1]…M[j]` to get an `k × j` matrix
+            cost += matrixChainMultiplication(dims, k, j, lookup);
+ 
+            // cost to multiply two `i × k` and `k × j` matrix
+            cost +=    dims[i] * dims[k] * dims[j];
+ 
+            if (cost < min) {
+                min = cost;
+            }
+        }
+ 
+        lookup[i][j] = min;
+    }
+ 
+    // return the minimum cost to multiply `M[j+1]…M[j]`
+    return lookup[i][j];
+}
+ 
+// Matrix Chain Multiplication Problem
+int main()
+{
+    // Matrix `M[i]` has dimension `dims[i-1] × dims[i]` for `i=1…n`
+    // input is 10 × 30 matrix, 30 × 5 matrix, 5 × 60 matrix
+    vector<int> dims = { 10, 30, 5, 60 };
+    int n = dims.size();
+ 
+    // lookup table to store the solution to already computed subproblems
+    vector<vector<int>> lookup(n + 1, vector<int>(n + 1));
+ 
+    cout << "The minimum cost is " << matrixChainMultiplication(dims, 0, n-1, lookup);
+ 
+    return 0;
+}
