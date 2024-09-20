@@ -494,3 +494,47 @@ int main()
  
     return 0;
 }
+
+
+//Longest increasing subsequence
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int LIS_DP(int arr[], int n) {
+    // Create a DP array to store the length of LIS with all its elements assigned to 1
+    vector<int> dp(n, 1);
+
+    // Iterate over each element
+    for (int i = 1; i < n; i++) {
+        // Check all previous elements
+        for (int j = 0; j < i; j++) {
+            // If the current element is greater than the previous one and it forms a longer increasing subsequence, by adding 1 (dp[j] + 1),we are counting the new element arr[i] as an extension of the subsequence that ends at arr[j].
+            if (arr[i] > arr[j]) {
+                dp[i] = max(dp[i], dp[j] + 1);
+            }
+        }
+    }
+
+    // Find the maximum value in the DP array, which is the length of the LIS
+    int maxLength = 0;
+    for (int i = 0; i < n; i++) {
+        maxLength = max(maxLength, dp[i]);
+    }
+
+    return maxLength;
+}
+
+int main() {
+    int n;
+   cout<<"How many numbers will the array have:";
+   cin>>n;
+   int arr[n];
+   cout<<"Enter the numbers:";
+   for(int i=0;i<n;i++){
+       cin>>arr[i];
+   }
+    cout << "The length of the LIS is " << LIS_DP(arr, n) << endl;
+
+    return 0;
+}
