@@ -453,3 +453,44 @@ int main(){
     cout<<"Longest common subsequence length:"<<result.first<<endl;
     cout<<"Logest common subsequence:"<<result.second;
 }
+
+
+
+
+//Shortest Common Supersequence Problem
+#include <iostream>
+#include <string>
+using namespace std;
+ 
+int SCSLength(string X, string Y, int m, int n)
+{
+    //if one of the strings is empty,the SCS is just the other string.so,if m == 0, return n (length of string Y), and if n == 0, return m (length of string X).
+    if (m == 0 || n == 0) {
+        return n + m;
+    }
+  //if the last characters of both strings match,we remove the last character from both strings and solve for the remaining strings,the result is then incremented by 1 (since we are adding this character to the supersequence)
+    if (X[m - 1] == Y[n - 1]) {
+        return SCSLength(X, Y, m - 1, n - 1) + 1;
+    }
+    
+    else {
+        return min(SCSLength(X, Y, m, n - 1) + 1,
+                    SCSLength(X, Y, m - 1, n) + 1);
+    }
+    /*if the last characters don't match, we have two options:remove the last character of Y and solve for X[1...m] and Y[1...n-1], or remove the last character of X and solve for X[1...m-1] and Y[1...n].we take the minimum of these two and add 1, representing the addition of one new character to the supersequence. */
+}
+ 
+int main()
+{
+    string X,Y;
+    cout<<"Enter the first string:";
+    cin>>X;
+    cout<<"Enter the second string:";
+    cin>>Y;
+    int m = X.length(), n = Y.length();
+ 
+    cout << "The length of the shortest common supersequence is "
+         << SCSLength(X, Y, m, n);
+ 
+    return 0;
+}
