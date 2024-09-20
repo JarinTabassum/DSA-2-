@@ -537,4 +537,70 @@ int main() {
     cout << "The length of the LIS is " << LIS_DP(arr, n) << endl;
 
     return 0;
+} 
+
+
+//The Levenshtein distance (Edit distance) Problem
+#include <iostream>
+using namespace std;
+ 
+// Function to find Levenshtein distance between string `X` and `Y`.
+int dist(string X, string Y)
+{
+    int m = X.length();
+    int n = Y.length();
+ 
+    // For all pairs of `i` and `j`, `T[i, j]` will hold the Levenshtein distance
+    int T[m + 1][n + 1];
+ 
+    // We can transform source prefixes into an empty string by dropping all characters 
+    for (int i = 0; i <= m; i++) {
+        T[i][0] = i;  // Fill first column (deletion case)
+        //First Column: Represents the number of deletions needed to transform prefixes of string X into an empty string. handles the special case where we're converting any prefix of X into an empty string (via deletions)
+    }
+ 
+    // We can reach target prefixes from empty source prefix by inserting every character
+    for (int j = 0; j <= n; j++) {
+        T[0][j] = j;  // Fill first row (insertion case)
+        //First Row: Represents the number of insertions needed to transform an empty string into prefixes of string Y
+    }
+ 
+    int substitutionCost;
+ 
+    // Fill the lookup table in a bottom-up manner
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (X[i - 1] == Y[j - 1]) {
+                substitutionCost = 0;  // No cost if characters match
+            } else {
+                substitutionCost = 1;  // Cost of substitution if they differ
+            }
+
+            // Calculate the minimum cost from deletion, insertion, and substitution
+            T[i][j] = min(min(T[i - 1][j] + 1,          // deletion
+                              T[i][j - 1] + 1),         // insertion
+                          T[i - 1][j - 1] + substitutionCost);  // substitution
+        }
+        //deletion : "What was the cost to convert the first i−1 characters of X to the first j characters of Y?" Plus one more for the deletion
+        
+       //insertion : What was the cost to convert the first i characters of X to the first j−1 characters of Y? Plus one more for the insertion
+      
+      //What was the cost to convert the first i−1 characters of X to the first j−1 characters of Y?" Plus the cost of substituting the last character 
+    }
+ 
+    return T[m][n];
 }
+ 
+int main()
+{
+    string X,Y;
+    cout<<"Enter the first string:";
+    cin>>X;
+    cout<<"Enter the second string:";
+    cin>>Y;
+ 
+    cout << "The Levenshtein distance is " << dist(X, Y);
+ 
+    return 0;
+}
+
