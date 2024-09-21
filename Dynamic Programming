@@ -695,3 +695,68 @@ int main()
  
     return 0;
 }
+
+
+//Partition problem
+#include <iostream>
+#include <vector>
+using namespace std;
+
+bool canPartition(vector<int>& nums) {
+    int total_sum = 0;
+    
+    // Calculate the total sum of the set
+    for (int num : nums) {
+        total_sum += num;
+    }
+
+    // If the total sum is odd, we can't partition it into two equal subsets
+    if (total_sum % 2 != 0) {
+        return false;
+    }
+
+    // Target sum is half of the total sum, if sum=30 then target is 15, as bith equal half subset will have the sum of 15
+    int target = total_sum / 2;
+
+    //from 0 to target
+    vector<bool> dp(target + 1, false);
+
+    // A subset with sum 0 can always be formed
+    dp[0] = true;
+
+    // Iterate through the numbers in the set
+    for (int num : nums) {
+        // Update the dp array from the back to avoid overwriting values
+        for (int i = target; i >= num; i--) {
+            dp[i] = dp[i] || dp[i - num]; //explanation below
+        }
+    }
+
+    //if the target index of data is true then it can be formed with two half otherwise it cant
+    //we need to check whether there exists a subset whose sum is half of this total sum, so we took, target = total_sum / 2. If such a subset exists, then the remaining elements of the set will automatically form another subset with the same sum (because the total sum is even, and we split it equally)
+    
+        return dp[target]; 
+}
+
+int main() {
+    vector<int> S = {5,5,5,10,5};
+
+    if (canPartition(S)) {
+        cout << "The set can be partitioned into two subsets with equal sum." << endl;
+    } else {
+        cout << "The set cannot be partitioned into two subsets with equal sum." << endl;
+    }
+
+    return 0;
+}
+
+/*Suppose we have the following numbers nums = {3, 1, 4, 2, 2} and our target = 6.
+We create dp = {true, false, false, false, false, false, false}. This represents the sums 0 to 6 that can be formed. Initially, only dp[0] = true since a subset with sum 0 can always be formed by taking no elements.
+First iteration (num = 3):
+
+We update dp backwards from i = 6 to i = 3:
+For i = 6: dp[6] = dp[6] || dp[6 - 3] = false || dp[3] = false.
+For i = 5: dp[5] = dp[5] || dp[5 - 3] = false || dp[2] = false.
+For i = 4: dp[4] = dp[4] || dp[4 - 3] = false || dp[1] = false.
+For i = 3: dp[3] = dp[3] || dp[3 - 3] = false || dp[0] = true, so dp[3] = true.
+The dp array is now: {true, false, false, true, false, false, false} */
