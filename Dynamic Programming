@@ -462,35 +462,57 @@ int main(){
 #include <string>
 using namespace std;
  
-int SCSLength(string X, string Y, int m, int n)
+int SCSLength(string X, string Y)
 {
-    //if one of the strings is empty,the SCS is just the other string.so,if m == 0, return n (length of string Y), and if n == 0, return m (length of string X).
-    if (m == 0 || n == 0) {
-        return n + m;
+    int m = X.length(), n = Y.length();
+ 
+    //lookup[i][j] represents the length of the shortest common supersequence for the prefixes X[0..i-1] and Y[0..j-1], +1 to handle the empty strings
+    int lookup[m + 1][n + 1];
+ 
+    //first column : base case
+    //if one string Y is empty (j = 0), the length of the supersequence is just the length of the remaining part of X. So lookup[i][0] = i
+    for (int i = 0; i <= m; i++) {
+        lookup[i][0] = i;
     }
-  //if the last characters of both strings match,we remove the last character from both strings and solve for the remaining strings,the result is then incremented by 1 (since we are adding this character to the supersequence)
-    if (X[m - 1] == Y[n - 1]) {
-        return SCSLength(X, Y, m - 1, n - 1) + 1;
+ 
+    //first row : base case
+    //similarly,if X is empty (i = 0), the shortest supersequence is the remaining part of Y. So lookup[0][j] = j
+    for (int j = 0; j <= n; j++) {
+        lookup[0][j] = j;
     }
-    
-    else {
-        return min(SCSLength(X, Y, m, n - 1) + 1,
-                    SCSLength(X, Y, m - 1, n) + 1);
+ 
+    // fill the lookup table in a bottom-up manner
+    for (int i = 1; i <= m; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            // if the current character of `X` and `Y` matches
+            if (X[i - 1] == Y[j - 1]) {
+                lookup[i][j] = lookup[i - 1][j - 1] + 1;
+            }
+            // otherwise, if the current character of `X` and `Y` don't match
+            else {
+                lookup[i][j] = min(lookup[i - 1][j] + 1, lookup[i][j - 1] + 1);
+            }
+        }
+        //matching characters: if the characters at position i-1 in X and j-1 in Y are the same, we add that character to the supersequence. thus, the length of the SCS is 1 plus the SCS of the previous substrings lookup[i][j] = lookup[i-1][j-1] + 1.
+        //non matching characters : if the characters don't match, the current character from either X or Y must be included in the supersequence. We take the minimum between:deleting one character from X and adding it to the supersequence (lookup[i-1][j] + 1) or deleting one character from Y and adding it to the supersequence (lookup[i][j-1] + 1). that does not mean we wont take the other unmatched element as in either case, the character that was not included in this step will still be part of the problem because we didn't remove it from the other string
     }
-    /*if the last characters don't match, we have two options:remove the last character of Y and solve for X[1...m] and Y[1...n-1], or remove the last character of X and solve for X[1...m-1] and Y[1...n].we take the minimum of these two and add 1, representing the addition of one new character to the supersequence. */
+ 
+    return lookup[m][n];
+    //lookup[m][n] contains the length of the shortest common supersequence for the entire strings X and Y
 }
  
 int main()
 {
     string X,Y;
-    cout<<"Enter the first string:";
+    cout<<"Enter first string:";
     cin>>X;
     cout<<"Enter the second string:";
     cin>>Y;
-    int m = X.length(), n = Y.length();
  
     cout << "The length of the shortest common supersequence is "
-         << SCSLength(X, Y, m, n);
+         << SCSLength(X, Y);
  
     return 0;
 }
