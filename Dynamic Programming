@@ -760,3 +760,74 @@ For i = 5: dp[5] = dp[5] || dp[5 - 3] = false || dp[2] = false.
 For i = 4: dp[4] = dp[4] || dp[4 - 3] = false || dp[1] = false.
 For i = 3: dp[3] = dp[3] || dp[3 - 3] = false || dp[0] = true, so dp[3] = true.
 The dp array is now: {true, false, false, true, false, false, false} */
+
+
+//Word break problem
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm> // Required for std::find
+using namespace std;
+
+// Function to determine if a string can be segmented into space-separated
+// sequence of one or more dictionary words
+bool wordBreak(vector<string> const &dict, string word, vector<int> &lookup)
+{
+    int n = word.size();
+
+    // Base case: if the word is empty, it can be segmented
+    if (n == 0) {
+        return true;
+    }
+
+    // If this subproblem is being encountered for the first time
+    if (lookup[n] == -1)
+    {
+        // Mark subproblem as seen (0 initially assuming the word cannot be segmented)
+        lookup[n] = 0;
+
+        // Loop through all possible prefixes
+        for (int i = 1; i <= n; i++)
+        {
+            // Get the current prefix
+            //word.substr(0, i) extracts the substring (prefix) from the beginning of the word up to the i-th character.if word = "apple" and i = 3, prefix = app
+            string prefix = word.substr(0, i);
+
+            // If the prefix (word.substr(0,i)) is found in the dictionary and the suffix(word.substr(i)) can be segmented
+            if (find(dict.begin(), dict.end(), prefix) != dict.end() &&
+                wordBreak(dict, word.substr(i), lookup))
+            {
+                // Mark the current subproblem as solvable
+                lookup[n] = 1;
+                return true;
+            }
+        }
+        //If the prefix exists in the dictionary, the result of find() will not be equal to dict.end(). This means the prefix is a valid word.If find() returns dict.end(), the prefix is not found in the dictionary
+    }
+
+    // Return the result for the current subproblem
+    return lookup[n];
+}
+
+int main()
+{
+    // Vector to represent the dictionary (instead of an unordered_set)
+    vector<string> dict = { "this", "th", "is", "famous", "Word", "break",
+                            "b", "r", "e", "a", "k", "br", "bre", "brea", "ak", "problem" };
+
+    // Input string
+    string word = "Wordbreakproblem";
+
+    // Lookup table to store solutions to subproblems
+    vector<int> lookup(word.length() + 1, -1);
+
+    // Check if the word can be segmented
+    if (wordBreak(dict, word, lookup)) {
+        cout << "The string can be segmented";
+    }
+    else {
+        cout << "The string can't be segmented";
+    }
+
+    return 0;
+}
