@@ -295,7 +295,7 @@ int knapsack(int W,vector<int> &weights,vector<int> &values,int n){
     }
     return dp[n][W]; //returing the maximum value which can achieved by filling it with n items with W capacity
     //exclude the item: dp[i][w]=dp[i-1][w] means the if we take the i-th item it will be give the same outcome as the previous one, so that will have no impact thus excluded
-    //include the item: dp[i][w] will take the max element between the pevious one and after taking the item, dp[i-1][w] will mean the previous one and dp[i-1][w-weights[i-1] (the remaining items weight as 2D so we can compare through from row and column) + the current items value (values[i-1])
+    //include the item: dp[i][w] will take the max element between the before and after taking the item, dp[i-1][w] will mean the before one and dp[i-1][w-weights[i-1] (the remaining items weight as 2D so we can compare through from row and column) + the current items value (values[i-1])
 }
 void printSelectedItems(int W,vector<int> &weights, vector<int> &values, int n){
     vector<vector<int>> dp(n+1, vector<int>(W+1,0));
