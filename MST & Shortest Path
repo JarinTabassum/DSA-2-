@@ -1,0 +1,137 @@
+Prim’s Algorithm and Kruskal’s Algorithm are both used to find the Minimum Spanning Tree (MST) of a graph.
+Dijkstra’s Algorithm and Bellman-Ford Algorithm are both used to solve the Shortest Path problem.
+
+Prim's and Kruskal's for Minimum Spanning Tree (MST):
+-----Prim's Algorithm:
+MST for a connected, undirected graph.
+Efficient for dense graphs.
+-----Kruskal's Algorithm:
+MST for a connected, undirected graph.
+Efficient for sparse graphs.
+
+Dijkstra's and Bellman-Ford for Shortest Path:
+-----Dijkstra’s Algorithm:
+Solves single-source shortest path for graphs with non-negative edge weights.
+More efficient than Bellman-Ford but can’t handle negative weights.
+Use Dijkstra’s when edge weights are non-negative, and you need an efficient solution.
+-----Bellman-Ford Algorithm:
+Solves single-source shortest path for graphs, even with negative edge weights.
+Also detects negative-weight cycles in a graph. Use Bellman-Ford when the graph might have negative weights or you need to detect negative cycles.
+
+Difference between prims and Kruskal:
+first one for Prim's second for Kruskal's
+---Graph Type	
+Works best with dense graphs (many edges)	
+Works best with sparse graphs (fewer edges)
+---How It Works	
+Starts at any vertex and expands outward by choosing the smallest edge that connects the growing tree to a new vertex.	
+Starts by sorting all edges and adding edges in increasing order of weight, ensuring no cycles.
+---Data Structure Used	
+Priority queue (min-heap) to track the smallest edge.	
+Disjoint-set (Union-Find) to detect cycles.
+---Edge Selection	
+Selects edges based on connectivity from already included vertices.	
+Selects edges globally based on the smallest available edge, regardless of connectivity.
+---Cycle Detection	
+No explicit cycle detection needed since it grows from a single vertex.	
+Requires explicit cycle detection (handled by Union-Find).
+---Initial Step	
+Start from any vertex (grows a tree from a vertex).	
+Start with an empty edge set (builds from individual edges).
+---Implementation Complexity	
+Slightly more complex due to priority queue and vertex tracking.	
+Relatively simple; involves sorting edges and using Union-Find.
+---Time Complexity	
+O(E log V) (priority queue-based implementation).	
+O(E log E) or O(E log V) (due to edge sorting).
+
+When to use what:
+-----Use Prim’s Algorithm:
+When the graph is dense.
+When working with adjacency matrices.
+When you need to grow the MST from a specific starting vertex.
+-----Use Kruskal’s Algorithm:
+When the graph is sparse.
+When the graph is given as an edge list.
+When sorting edges and cycle detection is more intuitive to implement.
+
+
+
+//Prims Algorithm
+#include<iostream> //for input and output
+#include<vector>
+#include<queue> //for priority queue
+#include<math.h> //for numeric_limits
+using namespace std;
+struct compare{ //the way priority queue will be organized
+  bool operator() (pair<int, pair<int,int>> const & a, pair<int, pair<int,int>> const & b)
+      { return a.first>b.first; } //we are comparing two pairs (pair<int (weight), pair<int,int>> the vertices of the weight)), here be careful on the fact that even though it is a min heap it is written as ">" symbol and not as "<", it is just a weird way how priority queue works
+};
+int main(){
+    int graph[100][100]; //the 2D array that stores the adjacency matrix
+    int n_vertex,n_edge;
+    cout<<"Enter the number of vertices:";
+    cin>>n_vertex;
+    cout<<"Enter the number of edges:";
+    cin>>n_edge;
+    for(int i=0;i<=n_vertex;i++){
+        for(int j=0;j<=n_vertex;j++){
+            graph[i][j]=0; //initialize the entire adjacency matrix to 0, there are no edges between any pair of the vertices and the weight is 0
+        }
+    }
+    cout<<"Enter the weigth and vertex values:";
+    for(int i=0;i<n_edge;i++){
+        int u,v,w;
+        cin>>u>>v>>w; //here u and v are vertices and w is the weight
+        graph[u][v]=w; //as undirected graph so weight is the same both ways  
+        graph[v][u]=w;
+    }
+    for(int i=0;i<n_vertex;i++){
+        for(int j=0;j<n_vertex;j++){
+            cout<<graph[i][j]<<" ";
+            cout<<'\n';
+        }
+    }
+    int visited[n_vertex+10]; //this array tracks whether a vertex is added to the MST, if yes(1) then the vertex is visited
+    int parent[n_vertex+10]; //this arrays stores the parent of each vertex in MST
+    int distance[n_vertex+10]; //this array stores the minimum distance from the MST to each vertex
+    int source;
+    priority_queue<pair<int,pair<int,int>>,vector<pair<int,pair<int,int>>>,compare> queue_edges; //priority_queue <Type, Container, Compare> name ; here type is pair<weight,pair<the two vertices>, container vector, compare is customized.
+    for(int j=0;j<n_vertex;j++){
+        visited[j]=0; //all the vertices are initially unvisited
+        parent[j]=-1; //no vertex has a parent yet
+        distance[j]=numeric_limits<int>::max(); //the distace of all the vertices except source is set to infinity
+    }
+    cout<<"Enter source:";
+    cin>>source;
+    parent[source]=0; //parent of the source vertex is 0
+    distance[source]=0; //parent to parent distance is 0
+    visited[source]=1; //marks the source vertex as visited by 1
+    for(int i=0;i<n_vertex;i++){
+        if(graph[source][i]!=0){ //source to i is not 0 (connceted)
+            queue_edges.push(make_pair(graph[source][i],make_pair(source,i))); //pushing an edge into a priority queue,this edge is represented as a pair, the first element is the weight of the edge, and the second element is also a pair of the two vertices of the weight.
+        }
+    }
+    while(!queue_edges.empty()){ //this loop runs until the priority queue is ended
+        int u,v,w;
+        w=queue_edges.top().first; //get the smallest weight based in the edges that have been added to the queue so far, at first from source to the visited vertices it will grow
+        u=queue_edges.top().second.first; //taken weights vertices
+        v=queue_edges.top().second.second;
+        queue_edges.pop();
+        if((visited[v]==0) && (distance[v]>graph[u][v])){ //if vertex v has not been visited and weight of the edge (graph[u][v]) is smaller than the current vertex (distance[v]), the edge is added to the MST
+            parent[v]=u; //sets u as the parent of v
+            distance[v]=graph[u][v]; //update the distance
+            for(int i=0;i<n_vertex;i++){
+                if(graph[v][i]!=0){ //at first we searched for the source and its connceted vertices, from that connceted ones we will make new queue
+                    queue_edges.push(make_pair(graph[v][i],make_pair(v,i)));
+                }
+                visited[v]=1; //the vertex has been visited and so does its adjacent lists
+            }
+        }
+    }
+    for(int j=0;j<n_vertex;j++){ //final MST
+        cout<<parent[j]<<" "<<j<<" "<<graph[j][parent[j]]<<'\n';
+        //parent vertex of j, the current vertex j, the weight of the edge connecting j to its parent (j and parentof j)
+    }
+    return 0;
+}
