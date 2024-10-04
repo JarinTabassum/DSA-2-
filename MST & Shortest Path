@@ -353,6 +353,7 @@ int main() {
 
     // Graph represented as a list of edges
     vector<vector<int>> edges;  // Each edge is {u, v, w}
+    //its a 2D vector where the outer vector represents index of the edges and the inner vector represents a single edge and is structured as {u, v, w}
 
     cout << "Enter the edges with their weights (u v w):" << endl;
     for (int i = 0; i < n_edge; i++) {
@@ -368,20 +369,19 @@ int main() {
     cout << "Enter the source vertex: ";
     cin >> source;
 
-    // Distance array to store shortest distance from the source
-    vector<int> distance(n_vertex, numeric_limits<int>::max());
-    distance[source] = 0;
+    
+    vector<int> distance(n_vertex, numeric_limits<int>::max()); //all distances are set to infinity intially
+    vector<int> parents(n_vertex, -1); //intially no vertices has any parent
+    
+    distance[source] = 0; //source to source distance 0
 
-    // Parent array to reconstruct the path
-    vector<int> parents(n_vertex, -1);
-
-    // Bellman-Ford Algorithm: Relax all edges |V| - 1 times
-    for (int i = 1; i <= n_vertex - 1; i++) {
-        for (auto edge : edges) {
-            int u = edge[0];
-            int v = edge[1];
-            int w = edge[2];
-            if (distance[u] != numeric_limits<int>::max() && distance[u] + w < distance[v]) {
+   // Bellman-Ford algorithm runs for n_vertex - 1 iterations because it needs to ensure that it has relaxed all possible paths without cycles in the graph
+    for (int i = 1; i <= n_vertex - 1; i++) { //the outer loop:in a graph with n_vertex vertices, the longest possible path that does not form a cycle can contain at most n_vertex - 1 edges
+        for (auto edge : edges) { //the inner loop iterates through each edge in edges
+            int u = edge[0]; //edge vector stored the u vertex at first, thats why 0
+            int v = edge[1]; //v vertex second thats why 1
+            int w = edge[2]; //the weight at the last
+            if (distance[u] != numeric_limits<int>::max() && distance[u] + w < distance[v]) { //if u is visited and the distance is shorter than before then update (relaxation)
                 distance[v] = distance[u] + w;
                 parents[v] = u;
             }
@@ -395,6 +395,7 @@ int main() {
         int v = edge[1];
         int w = edge[2];
         if (distance[u] != numeric_limits<int>::max() && distance[u] + w < distance[v]) {
+            //after all edges have been relaxed, this loop checks for negative-weight cycles by seeing if further relaxation is possible. If it is, it indicates the presence of a negative cycle
             cout << "Graph contains a negative-weight cycle!" << endl;
             negative_cycle = true;
             break;
@@ -411,8 +412,7 @@ int main() {
                 cout << "Vertex " << i << ": " << distance[i] << endl;
             }
         }
-
-        // Print the paths to each vertex from the source
+    // Print the paths to each vertex from the source
         cout << "\nPaths from source vertex " << source << ":\n";
         for (int i = 0; i < n_vertex; i++) {
             if (distance[i] != numeric_limits<int>::max() && i != source) {
@@ -436,4 +436,5 @@ int main() {
 
     return 0;
 }
+
 
