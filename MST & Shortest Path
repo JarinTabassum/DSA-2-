@@ -135,3 +135,70 @@ int main(){
     }
     return 0;
 }
+
+//Kruskal's algorithm
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+int n_vertex,n_edge,p[100],rankk[100];
+void make_set(){
+    for(int i=0;i<n_vertex;i++){ //all the vertices
+        p[i]=i;//initially each vertex is their own parents
+        rankk[i]=0; //and their height is 0
+    }
+}
+int find_set(int x){
+    if(p[x]==x){ //if the vertice and its parent is the same then return as it is the root parent
+        return x;
+    }
+    else{
+        return p[x]=find_set(p[x]); //path compression
+        //it flattens the tree by making each node point directly to the root during the Find operation
+    }
+}
+int union_sets(int s1,int s2){
+    int r1,r2;
+    r1=find_set(s1); //parent of s1 is r1
+    r2=find_set(s2); //parent of s2 is r2
+    if(r1==r2){ //if r1 and r2 is the same then that would mean they belong to the same set, already are in union, no need to do that again, return 0
+        return 0;
+    }
+    if(rankk[r1]>rankk[r2]){ //if r1 has gretaer height then make r1 , r2's parent
+        p[r2]=r1;
+    }
+    else{
+        p[r1]=r2; //if r2 is gretaer then make r2 the parent
+        if(rankk[r1]==rankk[r2]) rankk[r2]++; //if both of their height is same then the merged ones rank will be one level deeper
+    }
+    return 1;
+}
+int main(){
+    vector<pair<int, pair<int,int>>> graph1; //pair<weight, pair<two vertices of the weight>>>
+    int i,u,v,w;
+    cout<<"Enter the number of vertices:";
+    cin>>n_vertex;
+    cout<<"Enter the number of edges:";
+    cin>>n_edge;
+    cout<<"Enter the graph:";
+    for(int i=0;i<n_edge;i++){
+        cin>>u>>v>>w;
+        graph1.push_back(make_pair(w,make_pair(u,v)));
+    }
+    sort(graph1.begin(),graph1.end()); //sorting the graph in ascending order
+    cout<<"Sorted graph according in ascending order to the edges:\n";
+    for(int i=0;i<n_edge;i++){ //printing the graph to lower to greater of the weight
+        cout<<"<"<<graph1[i].second.first<<","<<graph1[i].second.second<<">---"<<graph1[i].first<<'\n';
+    }
+    cout<<'\n';
+    make_set(); 
+    cout<<"Minimum spanning tree: \n";
+    for(int i=0; i<n_edge; i++){
+        u=graph1[i].second.first; //from the shortest weight's edge u and v to eventual ones
+        v=graph1[i].second.second;
+        if(union_sets(u,v)!=0){ //if the union does not form a cycle, then add it 
+            cout<<"<"<<u<<","<<v<<">---"<<graph1[i].first<<'\n';
+        }
+    }
+    return 0;
+}
