@@ -215,9 +215,10 @@ struct compare{
         { 
             return a.first>b.first ; 
         }
+        //it compares two pairs based on their first element (the weight). This ensures that the priority queue always pops the pair with the smallest weight first.
 };
 int main(){
-    int graph[100][100];
+    int graph[100][100]; //A 2D array to represent the adjacency matrix of the graph (assuming a maximum of 100 vertices)
     int n_vertex,n_edge;
      bool is_directed;
     
@@ -233,7 +234,8 @@ int main(){
     // Initialize the graph with zeros
     for (int i = 0; i < n_vertex; i++) {
         for (int j = 0; j < n_vertex; j++) {
-            graph[i][j] = 0;
+            graph[i][j] = 0; //initializes the adjacency matrix to 0 to indicate that there are no edges between the vertices.
+
         }
     }
 
@@ -255,61 +257,64 @@ int main(){
             cout<<graph[i][j]<<' ';
         }
     }
-    int visited[n_vertex+10];
-    int parents[n_vertex+10];
-    int distance[n_vertex+10];
+    int visited[n_vertex+10]; 
+    int parents[n_vertex+10]; //stores the parent of each vertex to reconstruct the shortest path later
+    int distance[n_vertex+10]; //holds the shortest distance from the source to each vertex
     int source;
     priority_queue<pair<int, pair<int,int> >, vector<pair<int,pair<int,int> > >, compare> queue_edges;
+    //priority queue to store vertices based on their distances in ascending order
 
     for(int j=0;j<n_vertex;j++){
-        visited[j]=0;
-        parents[j]=-1;
-        distance[j]=numeric_limits<int>::max();
+        visited[j]=0; //initially vertices are not visited
+        parents[j]=-1; //has no parents to track the shortest path
+        distance[j]=numeric_limits<int>::max(); //distance is set to infinity
     }
     cout<<"Enter source:";
     cin>>source;
-    parents[source]=-1;
-    distance[source]=0;
-    visited[source]=1;
+    parents[source]=-1; //source has no parent
+    distance[source]=0; //source to source distance 0
+    visited[source]=1; //as we are in source so it obviously has been visited
     for(int i=0;i<n_vertex;i++){
-        if(graph[source][i]!=0){
+        if(graph[source][i]!=0){ //this checks if there is an edge between source and i,if the weight is not zero, it indicates that an edge exists from source to i
             queue_edges.push(make_pair(distance[source]+graph[source][i],make_pair(source,i)));
         }
+        //initializes the priority queue with edges from the source vertex to its neighbors, pushing pairs of (weight, (source, neighbor)).
     }
-    while(!queue_edges.empty()){
+    while(!queue_edges.empty()){ //this loop continues until there are no more edges to process in the priority queue
+        //the smallest weight edge is popped from the queue.
         w=queue_edges.top().first;
         u=queue_edges.top().second.first;
         v=queue_edges.top().second.second;
         queue_edges.pop();
-        if((visited[v]==0) && (distance[v]>distance[u]+graph[u][v])){
+        if((visited[v]==0) && (distance[v]>distance[u]+graph[u][v])){ //if vertex v has not been visited and if the new calculated distance to v is less than the currently known distance
             parents[v]=u;
             distance[v]=distance[u]+graph[u][v];
             
+            //after updating the distance to v, the algorithm looks at all neighbors of v and pushes them into the priority queue
             for(int i=0;i<n_vertex;i++){
                 if(graph[v][i]!=0){
                     queue_edges.push(make_pair(distance[v]+graph[v][i],make_pair(v,i)));
                 }
             }
-            visited[v]=1;
+            visited[v]=1; //mark vertex v as visited
         }
     }
+    //printing results
     for(int i=0;i<n_vertex;i++){
-        for(int j=0;j<n_vertex;j++){
             if(parents[i]!=-1){
                 cout<<parents[i]<<" "<<i<<endl;
             }
-        }
     }
     cout<<"Enter destination:";
     int dest;
     cin>>dest;
     vector<int>path;
-    while(dest!=source){
-        path.push_back(dest);
-        dest=parents[dest];
+    while(dest!=source){ //destination hasnt reached source yet
+        path.push_back(dest); //add dest to the path
+        dest=parents[dest]; //and update dest to its parent to find the further route
     }
-    path.push_back(dest);
-    for(int i=path.size()-1;i>0;i--){
+    path.push_back(dest); //out of the loop that means dest has reached to its source, so add this source to the path
+    for(int i=path.size()-1;i>0;i--){ //as we did it from dest to source, so print the path look as source to dest
         cout<<path[i]<<"--->";
     }
     cout<<path[0]<<endl;
