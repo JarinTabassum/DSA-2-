@@ -219,22 +219,37 @@ struct compare{
 int main(){
     int graph[100][100];
     int n_vertex,n_edge;
-    cout<<"Enter the number of vertices:";
-    cin>>n_vertex;
-    cout<<"Enter the number of edges:";
-    cin>>n_edge;
-    for(int i=0;i<n_vertex;i++){
-        for(int j=0;j<n_vertex;j++){
-            graph[i][j]=0;
+     bool is_directed;
+    
+    // Input for graph type
+    cout << "Is the graph directed? (1 for Yes, 0 for No): ";
+    cin >> is_directed;
+    
+    cout << "Enter the number of vertices: ";
+    cin >> n_vertex;
+    cout << "Enter the number of edges: ";
+    cin >> n_edge;
+    
+    // Initialize the graph with zeros
+    for (int i = 0; i < n_vertex; i++) {
+        for (int j = 0; j < n_vertex; j++) {
+            graph[i][j] = 0;
         }
     }
-    cout<<"Enter the weights and their corresponding edges:";
-    int u,v,w;
-    for(int i=0;i<n_edge;i++){
-        cin>>u>>v>>w;
-        graph[u][v]=w;
-        graph[v][u]=w; //remove if its a undirected graph
+
+    // Input edges with weights
+    cout << "Enter the weights and their corresponding edges (u v w):" << endl;
+    int u, v, w;
+    for (int i = 0; i < n_edge; i++) {
+        cin >> u >> v >> w;
+        graph[u][v] = w;  // Add the directed edge u -> v
+        if (!is_directed) {
+            graph[v][u] = w;  // Add reverse edge v -> u for undirected graph
+        }
     }
+
+    // Print the adjacency matrix
+    cout << "Graph (Adjacency Matrix):" << endl;
     for(int i=0;i<n_vertex;i++){
         for(int j=0;j<n_vertex;j++){
             cout<<graph[i][j]<<' ';
@@ -320,6 +335,12 @@ using namespace std;
 
 int main() {
     int n_vertex, n_edge;
+    bool is_directed;
+
+    // Input for graph type
+    cout << "Is the graph directed? (1 for Yes, 0 for No): ";
+    cin >> is_directed;
+
     cout << "Enter the number of vertices: ";
     cin >> n_vertex;
     cout << "Enter the number of edges: ";
@@ -332,7 +353,10 @@ int main() {
     for (int i = 0; i < n_edge; i++) {
         int u, v, w;
         cin >> u >> v >> w;
-        edges.push_back({u, v, w});
+        edges.push_back({u, v, w});  // Directed edge u -> v
+        if (!is_directed) {
+            edges.push_back({v, u, w});  // Add reverse edge for undirected graph
+        }
     }
 
     int source;
@@ -407,3 +431,4 @@ int main() {
 
     return 0;
 }
+
